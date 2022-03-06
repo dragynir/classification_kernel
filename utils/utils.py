@@ -24,10 +24,11 @@ class ImagePredictionLogger(Callback):
         Predict classes and log image with label to WandB
     '''
 
-    def __init__(self, val_samples, log_group, num_samples=32):
+    def __init__(self, val_samples, log_group, labels_list, num_samples=32):
         super().__init__()
         self.num_samples = num_samples
         self.log_group = log_group
+        self.labels_list = labels_list
         self.val_imgs, self.val_labels = val_samples
 
     def on_validation_epoch_end(self, trainer, pl_module):
@@ -39,7 +40,7 @@ class ImagePredictionLogger(Callback):
         preds = torch.argmax(logits, -1)
         # Log the images as wandb Image
         trainer.logger.experiment.log({
-            self.log_group:[wandb.Image(x, caption=f"Pred:{pred}, Label:{y}")
+            self.log_group:[wandb.Image(x, caption=f"Pred:{self.label_list[pred]}, Label:{self.label_list[pred]}")
                            for x, pred, y in zip(val_imgs[:self.num_samples],
                                                  preds[:self.num_samples],
                                                  val_labels[:self.num_samples])]
@@ -55,3 +56,8 @@ def calclulate_class_weights(df):
     weights = (1 - classes_count/total_sum)
     print('Calculate class weights: ', weights)
     return weights
+
+def load_labels(labelmap_path):
+    with open(labelmap_path, 'r') as f:
+        labels = f.read().splitlines()
+    return labels

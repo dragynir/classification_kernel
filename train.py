@@ -22,7 +22,7 @@ from optim import create_optimizer, create_loss
 from sheduler import create_sheduler
 from utils import seed_everything
 from utils import ImagePredictionLogger
-from utils import calclulate_class_weights
+from utils import calclulate_class_weights, load_labels
 
 
 # fix random for experiments reproducibility
@@ -38,6 +38,7 @@ class Model(pl.LightningModule):
         self.kwargs = kwargs
         self.train_dataset = train_dataset
         self.val_dataset = val_dataset
+        self.labels_list = load_labels(self.opt.labelmap_path)
         self.net = create_model(opt.architecture, opt.pretrained, opt.freeze_encoder, opt.num_classes)
         self.f1_metric = F1(num_classes=opt.num_classes, average='macro')
 
@@ -62,7 +63,7 @@ class Model(pl.LightningModule):
             self.weights = torch.FloatTensor(self.weights)
             if self.opt.precision == 16:
                 self.weights = self.weights.type(torch.bfloat16)
-                
+
         return create_loss(self.opt, self.weights)
 
     def configure_optimizers(self):
@@ -164,8 +165,7 @@ def get_domain_transforms(labelmap_path, night_label_path, domain):
     if not night_label_path:
         return None
 
-    with open(labelmap_path, 'r') as f:
-        labels = f.read().splitlines()
+    labels = load_labels(labelmap_path)
 
     with open(night_label_path, 'r') as f:
         n_labels = f.read().splitlines()
@@ -173,7 +173,6 @@ def get_domain_transforms(labelmap_path, night_label_path, domain):
     ind = [labels.index(nl) for nl in n_labels]
 
     return domain(ind)
-
 
 def train(df_folds: pd.DataFrame, fold_number, opt):
     '''
@@ -230,8 +229,8 @@ def train(df_folds: pd.DataFrame, fold_number, opt):
 
     callbacks = [
                      # log images to WandB
-                     ImagePredictionLogger(val_samples, 'val_examples'),
-                     ImagePredictionLogger(train_samples, 'train_examples'),
+                     ImagePredictionLogger(val_samples, 'val_examples', model.labels_list),
+                     ImagePredictionLogger(train_samples, 'train_examples', model.labels_list),
 
                      early_stop_callback,
                      checkpoint_callback,
