@@ -60,7 +60,7 @@ def TTA_5_cropps(image, resize_size=1024, target_size=256):
 
         zeros = image_[x:x + target_w, y: y+target_h, :]
         image_ = zeros.copy()
-        images.append(image_.reshape([1,target_shape[0],target_shape[1],target_shape[2]]))
+        images.append(image_.reshape([1,target_shape[0],target_shape[1],target_shape[2]]).squeeze())
 
     return images
 
