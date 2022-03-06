@@ -4,7 +4,7 @@ import numpy as np
 import torch
 import wandb
 from pytorch_lightning.callbacks import Callback
-
+import torchvision
 
 def seed_everything(seed: int):
     '''
@@ -31,6 +31,11 @@ class ImagePredictionLogger(Callback):
         self.labels_list = labels_list
         self.val_imgs, self.val_labels = val_samples
 
+    def make_grid(self, samples):
+        if samples.shape > 3:
+            return torchvision.utils.make_grid(samples, nrow=3)
+        return samples
+
     def on_validation_epoch_end(self, trainer, pl_module):
 
         val_imgs = self.val_imgs.to(device=pl_module.device)
@@ -38,12 +43,14 @@ class ImagePredictionLogger(Callback):
         # Get model prediction
         logits = pl_module(val_imgs)
         preds = torch.argmax(logits, -1)
+
         # Log the images as wandb Image
         trainer.logger.experiment.log({
-            self.log_group:[wandb.Image(x, caption=f"Pred:{self.labels_list[pred]}, Label:{self.labels_list[pred]}")
-                           for x, pred, y in zip(val_imgs[:self.num_samples],
-                                                 preds[:self.num_samples],
-                                                 val_labels[:self.num_samples])]
+            self.log_group:[wandb.Image(self.make_grid(x),
+                            caption=f"Pred:{self.labels_list[pred]}, Label:{self.labels_list[pred]}")
+                                for x, pred, y in zip(val_imgs[:self.num_samples],
+                                                    preds[:self.num_samples],
+                                                    val_labels[:self.num_samples])]
             })
 
 

@@ -28,6 +28,41 @@ class NightTransforms(DomainTransforms):
 
         super().__init__(filter_labels, transforms=transforms)
 
+def TTA_5_cropps(image, resize_size=1024, target_size=256):
+
+    target_shape = (target_size, target_size, 3)
+
+    width, height, d = image.shape
+    target_w, target_h, d = target_shape
+
+    start_x = ( width - target_w) // 2
+    start_y = ( height - target_h) // 2
+
+    starts = [[start_x, start_y],
+              [start_x - target_w, start_y],
+              [start_x, start_y - target_w],
+              [start_x + target_w, start_y],
+              [start_x, start_y + target_w],]
+
+    images = []
+    for start_index in starts:
+        image_ = image.copy()
+        x, y = start_index
+
+        if x < 0:
+            x = 0
+        if y < 0:
+            y = 0
+        if x + target_w >= resize_size:
+            x = resize_size - target_w-1
+        if y + target_h >= resize_size:
+            y = resize_size - target_h-1
+
+        zeros = image_[x:x + target_w, y: y+target_h, :]
+        image_ = zeros.copy()
+        images.append(image_.reshape([1,target_shape[0],target_shape[1],target_shape[2]]))
+
+    return images
 
 def create_transforms(opt, mode, post_transforms=None):
 
@@ -66,15 +101,17 @@ def create_transforms(opt, mode, post_transforms=None):
                 shear=(-opt.shear, opt.shear)
             ))
 
-
-        resize_tr = [A.Resize(height=opt.resolution, width=opt.resolution, p=1.0)]
-        if opt.resize_strategy == 'resized_crop':
-            resize_tr = [A.RandomResizedCrop(height=opt.resolution, width=opt.resolution, scale=(0.9, 1.0), p=1.0)]
-        elif opt.resize_strategy == 'resize&crop':
-            up_size = int(opt.resolution * 1.2)
-            resize_tr = [A.Resize(height=up_size, width=up_size, p=1.0),
-                        A.RandomCrop(height=opt.resolution, width=opt.resolution, p=1.0)
-            ]
+        if opt.multi_input:
+            resize_tr = [A.Resize(height=opt.milti_input_resize, width=opt.milti_input_resize, p=1.0)]
+        else:
+            resize_tr = [A.Resize(height=opt.resolution, width=opt.resolution, p=1.0)]
+            if opt.resize_strategy == 'resized_crop':
+                resize_tr = [A.RandomResizedCrop(height=opt.resolution, width=opt.resolution, scale=(0.9, 1.0), p=1.0)]
+            elif opt.resize_strategy == 'resize&crop':
+                up_size = int(opt.resolution * 1.2)
+                resize_tr = [A.Resize(height=up_size, width=up_size, p=1.0),
+                            A.RandomCrop(height=opt.resolution, width=opt.resolution, p=1.0)
+                ]
 
         post = [
             *resize_tr,

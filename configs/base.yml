@@ -23,7 +23,7 @@ log_batch_size: 16 # batch size to log on wandb
 
 
 architecture: 'efficientnet-b0' # model name ('efficientnet-b0')
-resolution: 224 # input resolution for model
+resolution: 56 # input resolution for model
 num_classes: 34 # number of classes # TODO check with assert in DataFrame
 pretrained: True # use preatrained model
 freeze_encoder: False # freeze encoder
@@ -53,6 +53,10 @@ anneal_strategy: 'linear' # 'cos' or 'linear' for ne cycle policy
 max_epochs: 55 # max epochs to train
 early_stop_patience: 20 # early stop paticence in epochs
 
+
+# multi image (timedistributed training)
+multi_image: False
+milti_input_resize: 224 # mast be equal to: resolution * 4
 
 # augmentations
 no_augs: False # disable augmentations

@@ -1,9 +1,11 @@
 import cv2
 import os
 import pandas as pd
+import torch
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
 from albumentations.pytorch.transforms import ToTensorV2
+from transforms import TTA_5_cropps
 
 class ImageDataset(Dataset):
     '''
@@ -51,6 +53,46 @@ class ImageDataset(Dataset):
             return None
         return list(self.labels)
 
+
+class MultiImageDataset(ImageDataset):
+    '''
+        Return images one by one with augmentations
+    '''
+    def __init__(self, resize_size, target_size, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.resize_size, self.target_size = resize_size, target_size
+
+    def __getitem__(self, idx: int):
+        image_id = self.image_ids[idx]
+        image_path = os.path.join(self.data_root, image_id)
+        image = cv2.imread(image_path, cv2.IMREAD_COLOR)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+        label = self.labels[idx]
+
+        if not (type(image) is np.ndarray):
+            raise ValueError(f'Image is corrupted: {image_path}')
+
+        if self.transforms:
+            sample = self.transforms(image=image)
+            image  = sample['image']
+
+        if self.domain_transforms:
+            image = self.domain_transforms(image, label)
+
+        images = TTA_5_cropps(image, self.resize_size, self.target_size)
+        tensors = []
+        for img in images:
+            tensors.append(self.to_tensor(image=img)['image'])
+        
+        multi_image = torch.cat(tensors, dim=0)
+
+        if self.labels is None:
+            return multi_image
+
+        return multi_image, label
+
+
 def create_dataset(df: pd.DataFrame, data_root, transforms=None, domain_transforms=None) -> ImageDataset:
     '''
         Create dataset from data.csv DataFrame
@@ -63,6 +105,34 @@ def create_dataset(df: pd.DataFrame, data_root, transforms=None, domain_transfor
         labels = df.target.values
 
     return ImageDataset(data_root, image_ids, labels, transforms, domain_transforms)
+
+def create_multi_input_dataset(
+    df: pd.DataFrame,
+    data_root,
+    resize_size,
+    target_size,
+    transforms=None,
+    domain_transforms=None
+   ) -> ImageDataset:
+    '''
+        Create dataset from data.csv DataFrame
+    '''
+    
+    image_ids = df.ids.values
+    labels = None
+
+    if 'target' in df.columns:
+        labels = df.target.values
+
+    return MultiImageDataset(
+        resize_size,
+        target_size,
+        data_root=data_root,
+        image_ids=image_ids,
+        labels=labels,
+        transforms=transforms,
+        domain_transforms=domain_transforms)
+
 
 def create_dataloader(dataset: ImageDataset, batch_size, num_workers, shuffle, drop_last=True):
 
