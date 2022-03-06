@@ -28,15 +28,6 @@ class NightTransforms(DomainTransforms):
 
         super().__init__(filter_labels, transforms=transforms)
 
-class BirdsTransforms(DomainTransforms):
-    def __init__(self, filter_labels):
-
-        transforms = A.Compose([
-                A.Rotate(limit=(90, 90), p=0.3),
-            ], p=1.0)
-
-        super().__init__(filter_labels, transforms=transforms)
-
 
 def create_transforms(opt, mode, post_transforms=None):
 

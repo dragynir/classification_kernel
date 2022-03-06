@@ -16,7 +16,7 @@ from pytorch_lightning.callbacks import LearningRateMonitor
 
 
 from data import create_dataloader, create_dataset, create_transforms
-from data import BirdsTransforms, NightTransforms
+from data import NightTransforms
 from models import create_model
 from optim import create_optimizer, create_loss
 from sheduler import create_sheduler
@@ -31,6 +31,7 @@ seed_everything(seed)
 
 
 class Model(pl.LightningModule):
+    # TODO add label smoothing to loss
     def __init__(self, train_dataset, val_dataset, opt, *args, **kwargs):
         super().__init__()
         self.opt = opt
@@ -78,17 +79,11 @@ class Model(pl.LightningModule):
 
         return [optimizer], [lr_scheduler]
 
-    def label_smoothing(self, y, num_classes, smoothing):
-        return y.float() * (1.0 - smoothing) + smoothing / (num_classes - 1.0)
-
     def step(self, batch):
 
         x, y  = batch
 
         y_hat = self(x)
-
-        # y = self.label_smoothing(y, self.opt.num_classes,
-        #                         self.opt.label_smoothing)
 
         loss  = self.loss_function(y_hat, y)
 
@@ -191,11 +186,7 @@ def train(df_folds: pd.DataFrame, fold_number, opt):
 
     train_df = df_folds[df_folds['fold'] != fold_number]
 
-    night_transforms = get_domain_transforms(opt.labelmap_path, opt.night_labels, NightTransforms)
-    birds_transforms = get_domain_transforms(opt.labelmap_path, opt.birds_labels, BirdsTransforms)
-
-    train_dataset = create_dataset(train_df, opt.data_root,
-        transforms=train_transforms, domain_transforms=[night_transforms, birds_transforms])
+    train_dataset = create_dataset(train_df, opt.data_root,transforms=train_transforms)
     opt.steps_per_epoch = int(len(train_df)/opt.batch_size)
 
 
@@ -208,13 +199,11 @@ def train(df_folds: pd.DataFrame, fold_number, opt):
 
     model = Model(train_dataset, val_dataset, opt, class_weights=class_weights)
 
-
     # use wandb logger
     wandb_logger = WandbLogger(name=run_name, project=opt.project_name, job_type='train',
                         save_dir=save_dir, config=opt, log_model=True)
 
     wandb_logger.watch(model)
-
 
     # create callbacks
     early_stop_callback = EarlyStopping(

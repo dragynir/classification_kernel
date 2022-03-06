@@ -7,7 +7,6 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import argparse
-from birdsy_groups import get_eu_merge_group, get_us_merge_group
 from addict import Dict
 import yaml
 
@@ -16,9 +15,7 @@ import torch
 from PIL import Image
 
 MERGE_GROUPS = {
-    'birdsy_eu': get_eu_merge_group(),
-    'birdsy': get_us_merge_group(), # birdsy us
-    'simclr': {}
+
 }
 
 
@@ -236,6 +233,7 @@ def prepare_dataset(source_path, data_root, dataset_output_path, classification_
                     test_source=False, n_splits=5, seed=42, drop_count=50, sim_threshold=0.90):
 
     '''
+        Create DataFrame dataset from images folders
         filter_labels: filter labels and do not create labels.txt for generated df
     '''
 

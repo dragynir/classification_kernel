@@ -1,20 +1,20 @@
-project_name: 'birdsy_eu' # project name in wandb
-config: 'eu'
+project_name: 'project1' # project name in wandb
+config: 'some'
 
-data_root: '/home/mborisov/CLM/data/eu/'  # data root for images source
+data_root: '/home/some/CLM/data/eu/'  # data root for images source
 images_source:
-  - '/home/mborisov/CLM/data/eu/endpoint/'
-  - '/home/mborisov/CLM/data/eu/supervisely/'
+  - '/home/some/CLM/data/eu/endpoint/'
+  - '/home/some/CLM/data/eu/supervisely/'
 
-test_data_root: '/home/mborisov/CLM/test/'
+test_data_root: '/home/some/CLM/test/'
 test_images_source:
-  - '/home/mborisov/CLM/test/31_10_2021'
+  - '/home/some/CLM/test/31_10_2021'
 
-dataset_path: '/home/mborisov/CLM/birdsy_cl/datasets/eu'
-df_path: '/home/mborisov/CLM/birdsy_cl/datasets/eu/data.csv'
-labelmap_path: '/home/mborisov/CLM/birdsy_cl/datasets/eu/labelmap.txt'
+dataset_path: '/home/some/CLM/birdsy_cl/datasets/eu'
+df_path: '/home/some/CLM/birdsy_cl/datasets/eu/data.csv'
+labelmap_path: '/home/some/CLM/birdsy_cl/datasets/eu/labelmap.txt'
 
-experiment_path: '/home/mborisov/CLM/experiments/eu/exp2'
+experiment_path: '/home/some/CLM/experiments/eu/exp2'
 
 batch_size: 16 # how many samples per batch to load
 num_workers: 2 # how many subprocesses to use for data loading
@@ -39,7 +39,6 @@ precision: 16 # flaot 16 or float 32 training
 class_weights: True
 loss: 'cross_entropy'
 label_smoothing: 0.0 # [x DISABLED] label smoothing regularization: y * (1 - lb) + lb / (nc - 1)
-
 
 # optimizer, sheduler
 lr: 0.001 # base lr
