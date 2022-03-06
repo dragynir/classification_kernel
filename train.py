@@ -60,6 +60,9 @@ class Model(pl.LightningModule):
         self.weights = self.kwargs.get('class_weights') if 'class_weights' in self.kwargs else None
         if self.weights is not None:
             self.weights = torch.FloatTensor(self.weights)
+            if self.opt.precision == 16:
+                self.weights = self.weights.type(torch.bfloat16)
+                
         return create_loss(self.opt, self.weights)
 
     def configure_optimizers(self):
