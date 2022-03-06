@@ -146,8 +146,11 @@ def create_experiment(opt):
     with open(config_path, 'w') as f:
         yaml.dump(opt, f)
 
+    if os.path.exists(dataset_path):
+        shutil.rmtree(dataset_path)
+
     # copy dataset to experiment folder
-    shutil.copytree(opt.dataset_path, dataset_path, dirs_exist_ok=True)
+    shutil.copytree(opt.dataset_path, dataset_path)
     os.makedirs(checkpoint_path, exist_ok=True)
 
     return checkpoint_path
