@@ -230,7 +230,7 @@ def calculate_stats_plot(df, path):
         f'Images per class for {num_classes} classes', x_data='count', y_data='class', save_name=path)
 
 def prepare_dataset(source_path, data_root, dataset_output_path, classification_group, images_extention='jpg',
-                    test_source=False, n_splits=5, seed=42, drop_count=50, sim_threshold=0.90):
+                    test_source=False, drop_duplicates=False, n_splits=5, seed=42, drop_count=50, sim_threshold=0.90):
 
     '''
         Create DataFrame dataset from images folders
@@ -258,10 +258,11 @@ def prepare_dataset(source_path, data_root, dataset_output_path, classification_
     else:
         df = prepare_source(source_path, images_extention)
 
+    if drop_duplicates:
+        df = drop_duplicates(df, data_root, sim_threshold)
 
-    df = drop_duplicates(df, data_root, sim_threshold)
-
-    df = merge_classes(df, MERGE_GROUPS[classification_group])
+    if MERGE_GROUPS:
+        df = merge_classes(df, MERGE_GROUPS[classification_group])
 
     # drop classes with num_examples <= drop_count
     df = df.groupby('class').filter(lambda x: len(x) > drop_count).reset_index(drop=True)
