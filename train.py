@@ -199,8 +199,6 @@ def train(df_folds: pd.DataFrame, fold_number, opt):
     if opt.class_weights:
         class_weights = calclulate_class_weights(train_df)
 
-    model = Model(train_dataset, val_dataset, opt, class_weights=class_weights)
-
     if opt.multi_image:
         train_dataset = create_multi_input_dataset(train_df, opt.data_root, resize_size=opt.milti_input_resize,
             target_size=opt.resolution, transforms=train_transforms)    
@@ -208,11 +206,13 @@ def train(df_folds: pd.DataFrame, fold_number, opt):
         val_dataset = create_multi_input_dataset(val_df, opt.data_root, resize_size=opt.milti_input_resize, 
             target_size=opt.resolution, transforms=val_transforms)
         
+        model = Model(train_dataset, val_dataset, opt, class_weights=class_weights)
         model = MultiImageModel(model)
 
     else:
         train_dataset = create_dataset(train_df, opt.data_root,transforms=train_transforms)    
         val_dataset = create_dataset(val_df, opt.data_root, transforms=val_transforms)
+        model = Model(train_dataset, val_dataset, opt, class_weights=class_weights)
 
     # use wandb logger
     wandb_logger = WandbLogger(name=run_name, project=opt.project_name, job_type='train',

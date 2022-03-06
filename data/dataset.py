@@ -5,7 +5,7 @@ import torch
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
 from albumentations.pytorch.transforms import ToTensorV2
-from transforms import TTA_5_cropps
+from .transforms import TTA_5_cropps
 
 class ImageDataset(Dataset):
     '''
