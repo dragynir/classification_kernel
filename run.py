@@ -16,7 +16,7 @@ def update_config(config, params):
 def fit(**kwargs):
 
     # use base config
-    with open("./configs/us/base.yml") as cfg:
+    with open("./configs/base.yml") as cfg:
         base_config = yaml.load(cfg, Loader=yaml.FullLoader)
 
     if "config" in kwargs.keys():
