@@ -32,7 +32,7 @@ class ImagePredictionLogger(Callback):
         self.val_imgs, self.val_labels = val_samples
 
     def make_grid(self, samples):
-        if samples.shape > 3:
+        if len(samples.shape) > 3:
             return torchvision.utils.make_grid(samples, nrow=3)
         return samples
 
