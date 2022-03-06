@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  flaskapp:
+    build:
+      context: ./listener
+      dockerfile: Dockerfile
+    volumes:
+      - type: bind
+        source: C:\Users\dkoro\PythonProjects\Birdsy\birdsy_cl\inference\monitoring\ui\data
+        target: /app/data
+    ports:
+      - '9097:9097'
+    links:
+      - bokehapp
+  bokehapp:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    ports:
+      - '5006:5006'
+    volumes:
+      - type: bind
+        source: C:\Users\dkoro\PythonProjects\Birdsy\birdsy_cl\inference\monitoring\ui\data
+        target: /app/data

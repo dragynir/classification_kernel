@@ -1,0 +1,10 @@
+version: "2.4"
+
+services:
+  processing:
+    image: birdsy-processing:latest
+    command: ["python3", "/app/classify.py", "--rabbitmq_host", "5.188.124.21", "--rabbitmq_queue", "birds"]
+    restart: unless-stopped
+    environment:
+      - RABBITMQ_USER=birds_classify
+      - RABBITMQ_PASSWORD=ahLaing2mohj1oni
