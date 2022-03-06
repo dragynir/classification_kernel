@@ -1,9 +1,9 @@
 from efficientnet_pytorch import EfficientNet
 from torch import nn
+from .wrappers import MultiImageModel
 
 
-
-def create_model(architecture, pretrained, freeze, num_classes):
+def create_model(architecture, pretrained, freeze, num_classes, multi_image):
 
     net = None
 
@@ -24,5 +24,8 @@ def create_model(architecture, pretrained, freeze, num_classes):
         # unfreeze linear layer
         for p in net._fc.parameters():
             p.requires_grad  = True
+
+    if multi_image:
+        return MultiImageModel(net)
 
     return net

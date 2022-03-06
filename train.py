@@ -18,7 +18,6 @@ from pytorch_lightning.callbacks import LearningRateMonitor
 from data import create_dataloader, create_dataset, create_multi_input_dataset, create_transforms
 from data import NightTransforms
 from models import create_model
-from models import MultiImageModel
 from optim import create_optimizer, create_loss
 from sheduler import create_sheduler
 from utils import seed_everything
@@ -40,7 +39,12 @@ class Model(pl.LightningModule):
         self.train_dataset = train_dataset
         self.val_dataset = val_dataset
         self.labels_list = load_labels(self.opt.labelmap_path)
-        self.net = create_model(opt.architecture, opt.pretrained, opt.freeze_encoder, opt.num_classes)
+        self.net = create_model(opt.architecture,
+            opt.pretrained,
+            opt.freeze_encoder,
+            opt.num_classes,
+            opt.multi_image)
+
         self.f1_metric = F1(num_classes=opt.num_classes, average='macro')
 
         self.ap_metric = AveragePrecision(num_classes=opt.num_classes, average='macro')
@@ -206,13 +210,11 @@ def train(df_folds: pd.DataFrame, fold_number, opt):
         val_dataset = create_multi_input_dataset(val_df, opt.data_root, resize_size=opt.milti_input_resize, 
             target_size=opt.resolution, transforms=val_transforms)
         
-        model = Model(train_dataset, val_dataset, opt, class_weights=class_weights)
-        model = MultiImageModel(model)
-
     else:
         train_dataset = create_dataset(train_df, opt.data_root,transforms=train_transforms)    
         val_dataset = create_dataset(val_df, opt.data_root, transforms=val_transforms)
-        model = Model(train_dataset, val_dataset, opt, class_weights=class_weights)
+
+    model = Model(train_dataset, val_dataset, opt, class_weights=class_weights)
 
     # use wandb logger
     wandb_logger = WandbLogger(name=run_name, project=opt.project_name, job_type='train',
