@@ -236,7 +236,7 @@ def train(df_folds: pd.DataFrame, fold_number, opt):
                  ]
 
     trainer = pl.Trainer(
-        gpus=[1, 2], # use first and second gpus (check out Pytorch Lightning docs)
+        gpus=opt.gpus, # use first and second gpus (check out Pytorch Lightning docs)
         precision=opt.precision,
         max_epochs=opt.max_epochs,
         logger=wandb_logger, # set logger to allow logging to WandB

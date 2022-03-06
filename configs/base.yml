@@ -18,6 +18,7 @@ experiment_path: '/home/some/CLM/experiments/eu/exp2'
 
 batch_size: 16 # how many samples per batch to load
 num_workers: 2 # how many subprocesses to use for data loading
+gpus: '0'
 log_batch_size: 16 # batch size to log on wandb
 
 
