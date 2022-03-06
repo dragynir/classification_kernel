@@ -83,7 +83,9 @@ class MultiImageDataset(ImageDataset):
         images = TTA_5_cropps(image, self.resize_size, self.target_size)
         tensors = []
         for img in images:
-            tensors.append(self.to_tensor(image=img)['image'])
+            img = self.to_tensor(image=img)['image']
+            img = torch.unsqueeze(img, dim=0)
+            tensors.append(img)
         
         multi_image = torch.cat(tensors, dim=0)
 

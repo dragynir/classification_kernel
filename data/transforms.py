@@ -69,8 +69,9 @@ def create_transforms(opt, mode, post_transforms=None):
     assert mode in ['train', 'val'], 'Mode must be train or val'
 
     if mode == 'val':
+        resize_size = opt.milti_input_resize if opt.multi_image else opt.resolution
         transforms =  A.Compose([
-                A.Resize(height=opt.resolution, width=opt.resolution, p=1.0),
+                A.Resize(height=resize_size, width=resize_size, p=1.0),
                 A.Normalize(),
             ], p=1.0)
     elif mode == 'train':
@@ -101,7 +102,7 @@ def create_transforms(opt, mode, post_transforms=None):
                 shear=(-opt.shear, opt.shear)
             ))
 
-        if opt.multi_input:
+        if opt.multi_image:
             resize_tr = [A.Resize(height=opt.milti_input_resize, width=opt.milti_input_resize, p=1.0)]
         else:
             resize_tr = [A.Resize(height=opt.resolution, width=opt.resolution, p=1.0)]
