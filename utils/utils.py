@@ -47,7 +47,7 @@ class ImagePredictionLogger(Callback):
         # Log the images as wandb Image
         trainer.logger.experiment.log({
             self.log_group:[wandb.Image(self.make_grid(x),
-                            caption=f"Pred:{self.labels_list[pred]}, Label:{self.labels_list[pred]}")
+                            caption=f"Pred:{self.labels_list[pred]}, Label:{self.labels_list[y]}")
                                 for x, pred, y in zip(val_imgs[:self.num_samples],
                                                     preds[:self.num_samples],
                                                     val_labels[:self.num_samples])]
