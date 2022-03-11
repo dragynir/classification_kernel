@@ -2,6 +2,7 @@ import cv2
 import os
 import pandas as pd
 import torch
+import json
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
 from albumentations.pytorch.transforms import ToTensorV2
@@ -11,21 +12,38 @@ class ImageDataset(Dataset):
     '''
         Return images one by one with augmentations
     '''
-    def __init__(self, data_root, image_ids, labels, transforms=None, domain_transforms=None):
+    def __init__(self, data_root, df, transforms=None, domain_transforms=None):
         super().__init__()
         self.data_root = data_root
-        self.image_ids = image_ids
-        self.labels = labels
+        self.image_ids = df.ids
+        self.labels = df.target
+        self.images_meta = df.images_meta.apply(json.loads) if 'images_meta' in df.columns else None
         self.transforms = transforms
         self.domain_transforms = domain_transforms
-        self.to_tensor = ToTensorV2()
+        self.to_tensor = ToTensorV2()        
 
+    def __crop_image(self, idx, image):
+        if self.images_meta is None:
+            return image
+
+        image_meta = self.images_meta[idx]
+
+        if 'bbox' in image_meta:
+            bbox = image_meta['bbox']
+            x, y, w, h = bbox['x'], bbox['y'], bbox['w'], bbox['h']
+            image = image[y:y+h, x:x+w, :]
+
+        return image
+    
+    def __preprocess_image(self, idx, image):
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        return self.__crop_image(idx, image)
 
     def __getitem__(self, idx: int):
         image_id = self.image_ids[idx]
         image_path = os.path.join(self.data_root, image_id)
         image = cv2.imread(image_path, cv2.IMREAD_COLOR)
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = self.__preprocess_image(idx, image)
 
         label = self.labels[idx]
 
@@ -66,7 +84,7 @@ class MultiImageDataset(ImageDataset):
         image_id = self.image_ids[idx]
         image_path = os.path.join(self.data_root, image_id)
         image = cv2.imread(image_path, cv2.IMREAD_COLOR)
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = self.__preprocess_image(idx, image)
 
         label = self.labels[idx]
 
