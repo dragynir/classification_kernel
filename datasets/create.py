@@ -323,4 +323,4 @@ if __name__ == '__main__':
         data_root = opt.test_data_root
 
     prepare_dataset(images_source, data_root, opt.dataset_path, opt.project_name,
-        test_source=opt_parser.test_source, images_extention=['jpg', 'png'], sim_threshold=0.95)
+        test_source=opt_parser.test_source, images_extention=['jpg', 'png'], drop_count=0, sim_threshold=0.95)
