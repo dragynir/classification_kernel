@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import argparse
 from addict import Dict
 import yaml
-
+import tqdm
 import imagehash
 import torch
 from PIL import Image
@@ -56,7 +56,7 @@ def filter_bad_images(df, data_path):
         Remove corrupted images from df
     '''
     bad_images_list = []
-    for i, row in df.iterrows():
+    for i, row in tqdm.tqdm(df.iterrows()):
         img_path = os.path.join(data_path, row['ids'])
 
         if not os.path.exists(img_path):
@@ -176,7 +176,7 @@ def check_intersaction(df):
     return error
 
 
-def prepare_source(data_path, images_extention, sub_folder=''):
+def prepare_source(data_path, images_extention, sub_folder='', filter_images=False):
 
     print(f'Prepare data from {data_path}')
     train_files = []
@@ -200,7 +200,10 @@ def prepare_source(data_path, images_extention, sub_folder=''):
     print(f'Raw num classes: {raw_num_classes}')
 
     # filter None images
-    df = filter_bad_images(df, data_path)
+    if filter_images:
+        print('Filter bad images')
+        df = filter_bad_images(df, data_path)
+        print('Finish images filtering...')
 
     df['ids'] = df['ids'].apply(lambda x: os.path.join(sub_folder, x))
 
