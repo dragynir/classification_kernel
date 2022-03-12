@@ -81,17 +81,17 @@ def create_transforms(opt, mode, post_transforms=None):
         if not opt.no_augs:
             pre.append(A.HorizontalFlip(p=opt.hor_flip))
 
-            pre.append(
-                    A.OneOf([A.GaussNoise(p=opt.gauss_noise),
-                             A.ISONoise(p=opt.iso_noise),
-                ], p=1.0)
-            )
+            # pre.append(
+            #         A.OneOf([A.GaussNoise(p=opt.gauss_noise),
+            #                  A.ISONoise(p=opt.iso_noise),
+            #     ], p=1.0)
+            # )
 
-            pre.append(A.RandomBrightness(limit=opt.brightness, p=0.25))
+            # pre.append(A.RandomBrightness(limit=opt.brightness, p=0.25))
 
-            pre.append(A.RandomContrast(limit=opt.contrast, p=0.25))
+            # pre.append(A.RandomContrast(limit=opt.contrast, p=0.25))
 
-            pre.append(A.augmentations.transforms.ColorJitter(p=opt.color_jitter))
+            # pre.append(A.augmentations.transforms.ColorJitter(p=opt.color_jitter))
 
             # pre.append(A.augmentations.transforms.CLAHE(p=opt.clahe))
             # pre.append(A.Affine(
