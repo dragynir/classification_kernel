@@ -80,26 +80,26 @@ def create_transforms(opt, mode, post_transforms=None):
 
         if not opt.no_augs:
             pre.append(A.HorizontalFlip(p=opt.hor_flip))
+            pre.append(A.augmentations.transforms.ColorJitter(p=opt.color_jitter))
 
+            
+            pre.append(A.Affine(
+                scale=(1.0 - opt.scale, 1.0 + opt.scale),
+                translate_percent=(0.0, opt.translate),
+                rotate=(-opt.angle, opt.angle),
+                shear=(-opt.shear, opt.shear)
+            ))
+
+            # pre.append(A.augmentations.transforms.CLAHE(p=opt.clahe))
             # pre.append(
             #         A.OneOf([A.GaussNoise(p=opt.gauss_noise),
             #                  A.ISONoise(p=opt.iso_noise),
-            #     ], p=1.0)
+            #     ], p=0.5)
             # )
 
             # pre.append(A.RandomBrightness(limit=opt.brightness, p=0.25))
 
             # pre.append(A.RandomContrast(limit=opt.contrast, p=0.25))
-
-            # pre.append(A.augmentations.transforms.ColorJitter(p=opt.color_jitter))
-
-            # pre.append(A.augmentations.transforms.CLAHE(p=opt.clahe))
-            # pre.append(A.Affine(
-            #     scale=(1.0 - opt.scale, 1.0 + opt.scale),
-            #     translate_percent=(0.0, opt.translate),
-            #     rotate=(-opt.angle, opt.angle),
-            #     shear=(-opt.shear, opt.shear)
-            # ))
 
         if opt.multi_image:
             resize_tr = [A.Resize(height=opt.milti_input_resize, width=opt.milti_input_resize, p=1.0)]
