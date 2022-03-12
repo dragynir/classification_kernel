@@ -93,14 +93,13 @@ def create_transforms(opt, mode, post_transforms=None):
 
             pre.append(A.augmentations.transforms.ColorJitter(p=opt.color_jitter))
 
-            pre.append(A.augmentations.transforms.CLAHE(p=opt.clahe))
-
-            pre.append(A.Affine(
-                scale=(1.0 - opt.scale, 1.0 + opt.scale),
-                translate_percent=(0.0, opt.translate),
-                rotate=(-opt.angle, opt.angle),
-                shear=(-opt.shear, opt.shear)
-            ))
+            # pre.append(A.augmentations.transforms.CLAHE(p=opt.clahe))
+            # pre.append(A.Affine(
+            #     scale=(1.0 - opt.scale, 1.0 + opt.scale),
+            #     translate_percent=(0.0, opt.translate),
+            #     rotate=(-opt.angle, opt.angle),
+            #     shear=(-opt.shear, opt.shear)
+            # ))
 
         if opt.multi_image:
             resize_tr = [A.Resize(height=opt.milti_input_resize, width=opt.milti_input_resize, p=1.0)]
