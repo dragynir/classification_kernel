@@ -15,9 +15,9 @@ class ImageDataset(Dataset):
     def __init__(self, data_root, df, transforms=None, domain_transforms=None):
         super().__init__()
         self.data_root = data_root
-        self.image_ids = df.ids
-        self.labels = df.target if 'target' in df.columns else None 
-        self.images_meta = df.images_meta.apply(json.loads) if 'images_meta' in df.columns else None
+        self.image_ids = df.ids.values
+        self.labels = df.target.values if 'target' in df.columns else None 
+        self.images_meta = df.images_meta.apply(json.loads).values if 'images_meta' in df.columns else None
         self.transforms = transforms
         self.domain_transforms = domain_transforms
         self.to_tensor = ToTensorV2()        
