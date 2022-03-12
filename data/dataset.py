@@ -16,7 +16,7 @@ class ImageDataset(Dataset):
         super().__init__()
         self.data_root = data_root
         self.image_ids = df.ids
-        self.labels = df.target
+        self.labels = df.target if 'target' in df.columns else None 
         self.images_meta = df.images_meta.apply(json.loads) if 'images_meta' in df.columns else None
         self.transforms = transforms
         self.domain_transforms = domain_transforms
@@ -118,13 +118,7 @@ def create_dataset(df: pd.DataFrame, data_root, transforms=None, domain_transfor
         Create dataset from data.csv DataFrame
     '''
     
-    image_ids = df.ids.values
-    labels = None
-
-    if 'target' in df.columns:
-        labels = df.target.values
-
-    return ImageDataset(data_root, image_ids, labels, transforms, domain_transforms)
+    return ImageDataset(data_root, df, transforms, domain_transforms)
 
 def create_multi_input_dataset(
     df: pd.DataFrame,
@@ -138,18 +132,12 @@ def create_multi_input_dataset(
         Create dataset from data.csv DataFrame
     '''
     
-    image_ids = df.ids.values
-    labels = None
-
-    if 'target' in df.columns:
-        labels = df.target.values
 
     return MultiImageDataset(
         resize_size,
         target_size,
         data_root=data_root,
-        image_ids=image_ids,
-        labels=labels,
+        df=df,
         transforms=transforms,
         domain_transforms=domain_transforms)
 
