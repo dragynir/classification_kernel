@@ -147,7 +147,7 @@ class Model(pl.LightningModule):
 
     def train_dataloader(self):
         return create_dataloader(self.train_dataset, self.opt.batch_size,
-                                 self.opt.num_workers, shuffle=True)
+                                 self.opt.num_workers, shuffle=True, sample_weights=self.opt.sample_weights)
 
     def val_dataloader(self):
         return create_dataloader(self.val_dataset, self.opt.batch_size,

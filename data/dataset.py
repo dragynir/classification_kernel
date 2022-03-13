@@ -5,8 +5,10 @@ import torch
 import json
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
+from torch.utils.data.sampler import WeightedRandomSampler
 from albumentations.pytorch.transforms import ToTensorV2
 from .transforms import TTA_5_cropps
+from utils import calculate_sample_weights
 
 class ImageDataset(Dataset):
     '''
@@ -14,6 +16,7 @@ class ImageDataset(Dataset):
     '''
     def __init__(self, data_root, df, transforms=None, domain_transforms=None):
         super().__init__()
+        self.df = df
         self.data_root = data_root
         self.image_ids = df.ids.values
         self.labels = df.target.values if 'target' in df.columns else None 
@@ -142,12 +145,20 @@ def create_multi_input_dataset(
         domain_transforms=domain_transforms)
 
 
-def create_dataloader(dataset: ImageDataset, batch_size, num_workers, shuffle, drop_last=True):
+def create_dataloader(dataset: ImageDataset, batch_size, num_workers, shuffle, sample_weights=False, drop_last=True):
+
+    sampler = None
+    if sample_weights:
+        weights = calculate_sample_weights(dataset.df, over='target', beta=0.999)
+        print('Calculated sample weights:', pd.Series(weights).value_counts())
+        sampler = WeightedRandomSampler(torch.DoubleTensor(weights), len(weights))
+        shuffle = False
 
     return DataLoader(dataset,
                       batch_size=batch_size,
                       num_workers=num_workers,
                       shuffle=shuffle,
                       drop_last=drop_last,
-                      pin_memory=True
+                      pin_memory=True,
+                      sampler=sampler,
                       )

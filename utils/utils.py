@@ -5,6 +5,7 @@ import torch
 import wandb
 from pytorch_lightning.callbacks import Callback
 import torchvision
+import pandas as pd
 
 def seed_everything(seed: int):
     '''
@@ -68,3 +69,18 @@ def load_labels(labelmap_path):
     with open(labelmap_path, 'r') as f:
         labels = f.read().splitlines()
     return labels
+
+def get_effective_sample_weights(samples_per_class, beta=0.97):
+    num_classes = len(samples_per_class)
+    effective_num = 1.0 - np.power(beta, samples_per_class)
+    weights = (1.0 - beta) / np.array(effective_num)
+    weights = weights / np.sum(weights) * num_classes
+    return weights
+
+
+def calculate_sample_weights(df, over='target', beta=0.97):
+    df_group = pd.DataFrame(df[over].value_counts()).reset_index()
+    df_group.columns = ['group', 'weights']
+    df_group['weights'] = get_effective_sample_weights(df_group.weights, beta=beta)
+    map_w = pd.Series(df_group.weights.values, index=df_group.group)
+    return map_w[df[over]].values
