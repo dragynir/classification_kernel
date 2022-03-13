@@ -111,13 +111,11 @@ class Model(pl.LightningModule):
 
         f1_score = self.f1_metric(y_hat, y)
         ap_score = self.ap_metric(y_hat, y)
-        f1_class_score = self.f1_class_metric(y_hat, y)
 
         # log train loss and metrics to WandB
         self.log('train_loss', loss, on_step=False, on_epoch=True, logger=True, sync_dist=True)
         self.log('train_f1_score', f1_score, on_step=False, on_epoch=True, logger=True, sync_dist=True)
         self.log('train_ap_score', ap_score, on_step=False, on_epoch=True, logger=True, sync_dist=True)
-        self.log('train_class_f1', self.create_class_metrics(f1_class_score), on_step=False, on_epoch=True, logger=True, sync_dist=True)
         
         return {'loss': loss}
 
