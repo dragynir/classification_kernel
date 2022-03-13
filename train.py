@@ -117,7 +117,7 @@ class Model(pl.LightningModule):
         self.log('train_loss', loss, on_step=False, on_epoch=True, logger=True, sync_dist=True)
         self.log('train_f1_score', f1_score, on_step=False, on_epoch=True, logger=True, sync_dist=True)
         self.log('train_ap_score', ap_score, on_step=False, on_epoch=True, logger=True, sync_dist=True)
-        self.log(self.create_class_metrics(f1_class_score), on_step=False, on_epoch=True, logger=True, sync_dist=True)
+        self.log('train_class_f1', self.create_class_metrics(f1_class_score), on_step=False, on_epoch=True, logger=True, sync_dist=True)
         
         return {'loss': loss}
 
@@ -141,7 +141,7 @@ class Model(pl.LightningModule):
         self.log('val_loss', avg_loss, prog_bar=True, sync_dist=True)
         self.log('val_f1_score', f1_score, prog_bar=True, sync_dist=True)
         self.log('val_ap_score', ap_score, prog_bar=True, sync_dist=True)
-        self.log(self.create_class_metrics(f1_class_score), prog_bar=True, sync_dist=True)
+        self.log('val_class_f1', self.create_class_metrics(f1_class_score), prog_bar=True, sync_dist=True)
 
         return {'val_loss': avg_loss}
 
