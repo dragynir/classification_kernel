@@ -46,6 +46,7 @@ class Model(pl.LightningModule):
             opt.multi_image)
 
         self.f1_metric = F1(num_classes=opt.num_classes, average='macro')
+        self.f1_class_metric = F1(num_classes=opt.num_classes, average=None)
 
         self.ap_metric = AveragePrecision(num_classes=opt.num_classes, average='macro')
 
@@ -88,6 +89,12 @@ class Model(pl.LightningModule):
 
         return [optimizer], [lr_scheduler]
 
+    def create_class_metrics(self, values):
+
+        logs = {name + '_f1':v for name, v in zip(self.labels_list, values)}
+        
+        return logs
+
     def step(self, batch):
 
         x, y  = batch
@@ -104,12 +111,14 @@ class Model(pl.LightningModule):
 
         f1_score = self.f1_metric(y_hat, y)
         ap_score = self.ap_metric(y_hat, y)
+        f1_class_score = self.f1_class_metric(y_hat, y)
 
         # log train loss and metrics to WandB
         self.log('train_loss', loss, on_step=False, on_epoch=True, logger=True, sync_dist=True)
         self.log('train_f1_score', f1_score, on_step=False, on_epoch=True, logger=True, sync_dist=True)
         self.log('train_ap_score', ap_score, on_step=False, on_epoch=True, logger=True, sync_dist=True)
-
+        self.log(self.create_class_metrics(f1_class_score), on_step=False, on_epoch=True, logger=True, sync_dist=True)
+        
         return {'loss': loss}
 
     def validation_step(self, batch, batch_nb):
@@ -126,11 +135,13 @@ class Model(pl.LightningModule):
 
         f1_score = self.f1_metric(y_hat, y)
         ap_score = self.ap_metric(y_hat, y)
+        f1_class_score = self.f1_class_metric(y_hat, y)
 
         # log val loss and metrics to WandB
         self.log('val_loss', avg_loss, prog_bar=True, sync_dist=True)
         self.log('val_f1_score', f1_score, prog_bar=True, sync_dist=True)
         self.log('val_ap_score', ap_score, prog_bar=True, sync_dist=True)
+        self.log(self.create_class_metrics(f1_class_score), prog_bar=True, sync_dist=True)
 
         return {'val_loss': avg_loss}
 

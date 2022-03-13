@@ -15,7 +15,6 @@ import torch
 from PIL import Image
 
 MERGE_GROUPS = {
-
 }
 
 
