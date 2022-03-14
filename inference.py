@@ -9,6 +9,7 @@ from data import create_dataset, create_dataloader, create_transforms
 from train import Model
 import ttach as tta
 import torch.nn as nn
+import argparse
 
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -105,6 +106,7 @@ class ClassificationTTAWrapper(nn.Module):
 def predict_loader(model, dataloader, top_k, tta):
 
     y_pred = []
+    y_pred_conf = []
 
     with torch.no_grad():
         for imgs, imgs_name in dataloader:
@@ -119,27 +121,26 @@ def predict_loader(model, dataloader, top_k, tta):
 
             confidence, top_labels = torch.topk(probs, top_k, dim=1)
             pred_labels = top_labels.cpu().detach().numpy()
+            pred_confidence = confidence.cpu().detach().numpy()
 
             if tta:
                 top_confidence = torch.index_select(all_probs, dim=-1, index=top_labels.squeeze())
                 confidence_max, _ = torch.max(top_confidence, dim=1)
-                print('Max conf:', torch.round(confidence_max * (10**3)) / (10**3))
+                # print('Max conf:', torch.round(confidence_max * (10**3)) / (10**3))
 
             y_pred.extend(pred_labels)
-            print('Confidence:', torch.round(confidence * (10**3)) / (10**3))
+            y_pred_conf.extend(pred_confidence)
+            # print('Confidence:', torch.round(confidence * (10**3)) / (10**3))
 
-    return y_pred
+    return y_pred, y_pred_conf
 
 def indexes2labels(labels, indexes):
     print(indexes)
     return list(map(lambda x: labels[x], indexes))
 
-def predict(images_path, model_cfg, model_ckpt, labels_path, use_tta=False, top_k=3):
+def predict(opt, images_path, model_ckpt, use_tta=False, top_k=5):
 
-    with open(model_cfg, 'r') as f:
-        opt = Dict(yaml.safe_load(f))
-
-    with open(labels_path, 'r') as f:
+    with open(opt.labelmap_path, 'r') as f:
         labels = f.read().splitlines()
 
     images_links = os.listdir(images_path)
@@ -168,19 +169,36 @@ def predict(images_path, model_cfg, model_ckpt, labels_path, use_tta=False, top_
 
         inference_model = ClassificationTTAWrapper(inference_model, transforms, merge_mode='mean')
 
-    y_pred = predict_loader(inference_model, dataloader, top_k, use_tta)
+    y_pred, y_pred_conf = predict_loader(inference_model, dataloader, top_k, use_tta)
 
     pred_labels = map(lambda x: indexes2labels(labels, x), y_pred)
 
     results = {link:lbl for link, lbl in zip(images_links, pred_labels)}
 
+    pd.DataFrame({'images': images_links, 'labels': pred_labels})
+
     return results
 
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--config', type=str, default=None, help='yaml config path')
+parser.add_argument('--images_path', type=str, default=None, help='images folder path')
+parser.add_argument('--model_path', type=str, default=None, help='model pt path')
+parser.add_argument('--use_tta', action='store_true', help='enable tta')
+
+
+
 if __name__ == '__main__':
+
+    opt = parser.parse_args()
+
+    with open(opt.config, 'r') as cfg:
+        opt_config = Dict(yaml.load(cfg, Loader=yaml.FullLoader))
+
+
     images_path = '/home/mborisov/CLM/test_random_images'
     model_cfg = './configs/eu/base.yml'
     model_ckpt = '/home/mborisov/CLM/experiments/eu/exp2/checkpoint/epoch=51_val_loss=0.1233.ckpt'
     labels_path = './datasets/eu/labelmap.txt'
     use_tta = True
-    print(predict(images_path, model_cfg, model_ckpt, labels_path, use_tta))
+    print(predict(opt_config, opt.images_path, opt.model_path, opt.use_tta))
