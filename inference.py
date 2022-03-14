@@ -11,6 +11,7 @@ import ttach as tta
 import torch.nn as nn
 import argparse
 import tqdm
+import numpy as np
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -137,7 +138,7 @@ def predict_loader(model, dataloader, top_k, tta):
     return y_pred, y_pred_conf
 
 def indexes2labels(labels, indexes):
-    return list(map(lambda x: labels[x], indexes))
+    return np.array(map(lambda x: labels[x], indexes))
 
 def predict(opt, images_path, model_ckpt, use_tta=False, top_k=5):
 
@@ -174,7 +175,14 @@ def predict(opt, images_path, model_ckpt, use_tta=False, top_k=5):
 
     pred_labels = map(lambda x: indexes2labels(labels, x), y_pred)
 
-    res_df = pd.DataFrame({'images': images_links, 'labels': pred_labels, 'top_confidence': y_pred_conf})
+    pred_labels = np.vstack(pred_labels)
+    y_pred_conf = np.vstack(y_pred_conf)
+
+    res_df = pd.DataFrame({'images': images_links})
+
+    for i in range(top_k):
+        res_df[f'top_{i+1}'] = pred_labels[:, i]
+        res_df[f'top_{i+1}_conf'] = y_pred_conf[:, i]
 
     return res_df
 
