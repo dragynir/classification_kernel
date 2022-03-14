@@ -7,7 +7,7 @@ from addict import Dict
 from train import Model
 import argparse
 import sys
-
+import tqdm
 import shap
 import cv2
 import os
@@ -94,7 +94,7 @@ def evaluate(model, loader, output_path, labels_names, write_batches_count, show
 
 
     count = 0
-    for imgs, tr_imgs, labels, images_ids in loader:
+    for imgs, tr_imgs, labels, images_ids in tqdm.tqdm(loader):
 
         with torch.no_grad():
             logits = model(tr_imgs.to(DEVICE))
@@ -269,10 +269,10 @@ def run_test(opt, checkpoint_path, output_path, data_root=None, write_batches_co
 
     print(f'Total classifications: {len(y_pred)}.')
 
-    plot_cm(y_true, y_pred, os.path.join(output_stats_path, 'conf_matrix.png'), figsize=(75,75))
+    plot_cm(y_true, y_pred, os.path.join(output_stats_path, 'conf_matrix.png'), figsize=(20,20))
 
     plot_precision_recall_bar(unique_class_names, precision_values.tolist(), recall_values.tolist(),
-        os.path.join(output_stats_path, 'precision_recall_bar.png'), figsize=(100, 30))
+        os.path.join(output_stats_path, 'precision_recall_bar.png'), figsize=(25, 25))
 
 
 def extract_vall_loss(name):
@@ -313,12 +313,12 @@ def test(opt_parser):
     if opt_parser.val:
         output_path = os.path.join(output_path, 'val')
         run_test(opt, best_checkpoint_path, output_path, data_root=opt.data_root,
-            write_batches_count=8, fold=opt_parser.fold, batch_size=8, test_csv=None, show_shap_values=opt_parser.shap)
+            write_batches_count=2, fold=opt_parser.fold, batch_size=8, test_csv=None, show_shap_values=opt_parser.shap)
     elif opt_parser.test:
         csv_path = os.path.join(opt.experiment_path, 'dataset', 'data_test.csv')
         output_path = os.path.join(output_path, 'test')
         run_test(opt, best_checkpoint_path, output_path, data_root=opt.test_data_root,
-            write_batches_count=8, fold=opt_parser.fold, batch_size=8, test_csv=csv_path,
+            write_batches_count=2, fold=opt_parser.fold, batch_size=8, test_csv=csv_path,
             show_shap_values=opt_parser.shap, use_tta=opt_parser.tta)
     else:
         print('Please add --val or --test flag')
