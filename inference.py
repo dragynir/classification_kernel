@@ -138,7 +138,7 @@ def predict_loader(model, dataloader, top_k, tta):
     return y_pred, y_pred_conf
 
 def indexes2labels(labels, indexes):
-    return np.array(map(lambda x: labels[x], indexes))
+    return np.array(list(map(lambda x: labels[x], indexes)))
 
 def predict(opt, images_path, model_ckpt, use_tta=False, top_k=5):
 
@@ -173,7 +173,7 @@ def predict(opt, images_path, model_ckpt, use_tta=False, top_k=5):
 
     y_pred, y_pred_conf = predict_loader(inference_model, dataloader, top_k, use_tta)
 
-    pred_labels = map(lambda x: indexes2labels(labels, x), y_pred)
+    pred_labels = list(map(lambda x: indexes2labels(labels, x), y_pred))
 
     pred_labels = np.vstack(pred_labels)
     y_pred_conf = np.vstack(y_pred_conf)
