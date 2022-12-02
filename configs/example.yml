@@ -26,7 +26,7 @@ log_batch_size: 16 # batch size to log on wandb
 
 architecture: 'efficientnet-b0' # model name ('efficientnet-b0')
 resolution: 56 # input resolution for model
-num_classes: 34 # number of classes # TODO check with assert in DataFrame
+num_classes: 2 # number of classes # TODO check with assert in DataFrame
 pretrained: True # use preatrained model
 freeze_encoder: False # freeze encoder
 
