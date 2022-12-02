@@ -4,11 +4,11 @@ config: 'some'
 data_root: '/content/data/'  # data root for images source
 images_source:
   - '/content/data/train/'
-  - 'content/data/valid/
+  - 'content/data/valid/'
 
 test_data_root: '/content/data/'
 test_images_source:
-  - 'content/data/test/
+  - 'content/data/test/'
 
 dataset_path: '/home/some/CLM/birdsy_cl/datasets/eu'
 df_path: '/content/classification_kernel/datasets/data.csv'
