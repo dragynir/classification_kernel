@@ -11,7 +11,7 @@ test_images_source:
   - 'content/data/test/'
 
 task: 'binary'
-dataset_path: '/home/some/CLM/birdsy_cl/datasets/eu'
+dataset_path: '/content/classification_kernel/datasets/'
 df_path: '/content/classification_kernel/datasets/data.csv'
 labelmap_path: '/content/classification_kernel/datasets/labelmap.txt'
 
