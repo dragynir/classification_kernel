@@ -1,0 +1,83 @@
+project_name: 'example_kernel' # project name in wandb
+config: 'some'
+
+data_root: '/content/data/'  # data root for images source
+images_source:
+  - '/content/data/train/'
+  - 'content/data/valid/
+
+test_data_root: '/content/data/'
+test_images_source:
+  - 'content/data/test/
+
+dataset_path: '/home/some/CLM/birdsy_cl/datasets/eu'
+df_path: '/content/classification_kernel/datasets/data.csv'
+labelmap_path: '/content/classification_kernel/datasets/labelmap.txt'
+
+experiment_path: '/content/experiment0'
+
+batch_size: 16 # how many samples per batch to load
+sample_weights: False # balance images over target
+num_workers: 2 # how many subprocesses to use for data loading
+gpus: '0'
+log_batch_size: 16 # batch size to log on wandb
+
+
+architecture: 'efficientnet-b0' # model name ('efficientnet-b0')
+resolution: 56 # input resolution for model
+num_classes: 34 # number of classes # TODO check with assert in DataFrame
+pretrained: True # use preatrained model
+freeze_encoder: False # freeze encoder
+
+# finetune (warning! set lower learning rate when unfreeze encoder)
+
+
+kfold: False # use kfold cross-validation
+auto_lr_find: False # find optimal lr
+precision: 16 # flaot 16 or float 32 training
+
+
+# loss
+class_weights: True
+loss: 'cross_entropy'
+label_smoothing: 0.0 # [x DISABLED] label smoothing regularization: y * (1 - lb) + lb / (nc - 1)
+
+# optimizer, sheduler
+lr: 0.001 # base lr
+sheduler: 'reduce_lr' # ['onecycle', 'reduce_lr']
+lr_patience: 10 # epochs with no improvement after which learning rate will be reduced
+lr_div_factor: 10 # div factor for one cycle policy
+anneal_strategy: 'linear' # 'cos' or 'linear' for ne cycle policy
+
+
+# train options
+max_epochs: 55 # max epochs to train
+early_stop_patience: 20 # early stop paticence in epochs
+
+
+# multi image (timedistributed training)
+multi_image: False
+milti_input_resize: 224 # mast be equal to: resolution * 4
+
+# augmentations
+no_augs: False # disable augmentations
+
+brightness: 0.2 # range of random brightness (-0.2, 0.2) with 0.25 probability
+contrast: 0.2 # range of random contrast (-0.2, 0.2) with 0.25 probability
+color_jitter: 0.5 # color jitter probability
+gauss_noise: 0.5 #  GaussNoise probability
+
+hor_flip: 0.5 # probability of horizontal flip
+angle: 10 # degrees to rotate image (-angle, +angle) with 0.5 probability
+scale: 0.0 # scale image in range (1 - scale, 1 + scale) with 0.5 probability
+translate: 0.1 # Translation as a fraction (x-translation*width, y-translation*height) with 0.5 probability
+shear: 0 # shear image in degrees (-shear, +shear) with 0.5 probability
+clahe: 0.5 # contrast limited adaptive histogram equalization probability
+iso_noise: 0.5 # camera noise probability
+
+night_labels: ''
+birds_labels: ''
+
+resize_strategy: 'resized_crop'  # resized_crop: A.RandomResizedCrop (best)
+                                # resize: A.Resize
+                                # resize&crop: A.Resize up and A.Crop
