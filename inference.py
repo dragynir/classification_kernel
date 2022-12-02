@@ -203,6 +203,6 @@ if __name__ == '__main__':
     with open(opt.config, 'r') as cfg:
         opt_config = Dict(yaml.load(cfg, Loader=yaml.FullLoader))
 
-    df_res = predict(opt_config, opt.images_path, opt.model_path, opt.use_tta, top_k=5)
+    df_res = predict(opt_config, opt.images_path, opt.model_path, opt.use_tta, top_k=2)
 
     df_res.to_csv(opt.out_df, index=False);
