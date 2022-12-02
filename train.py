@@ -8,7 +8,8 @@ import wandb
 import yaml
 
 from pytorch_lightning.loggers import WandbLogger
-from torchmetrics import F1, AveragePrecision
+from torchmetrics import AveragePrecision
+from torchmetrics import F1Score as F1
 from torch.nn import functional as F
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
