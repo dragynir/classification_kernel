@@ -49,7 +49,7 @@ class Model(pl.LightningModule):
         self.f1_metric = F1(task=opt.task, num_classes=opt.num_classes, average='macro')
         self.f1_class_metric = F1(task=opt.task, num_classes=opt.num_classes, average=None)
 
-        self.ap_metric = AveragePrecision(num_classes=opt.num_classes, average='macro')
+        self.ap_metric = AveragePrecision(task=opt.task, num_classes=opt.num_classes, average='macro')
 
         # create dataloaders to log image in WandB
         self.log_val_dataloader = create_dataloader(self.val_dataset, self.opt.log_batch_size,
