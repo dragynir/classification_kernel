@@ -20,7 +20,7 @@ experiment_path: '/content/drive/MyDrive/classification_kernel_example/experimen
 batch_size: 16 # how many samples per batch to load
 sample_weights: False # balance images over target
 num_workers: 2 # how many subprocesses to use for data loading
-gpus: '0'
+gpus: '1'
 log_batch_size: 16 # batch size to log on wandb
 
 
