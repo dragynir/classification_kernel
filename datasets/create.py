@@ -323,6 +323,6 @@ if __name__ == '__main__':
     if opt_parser.test_source:
         images_source = opt.test_images_source
         data_root = opt.test_data_root
-
+    print('Preparing dataset...')
     prepare_dataset(images_source, data_root, opt.dataset_path, opt.project_name,
         test_source=opt_parser.test_source, images_extention=['jpg', 'png'], drop_count=0, sim_threshold=0.95)
