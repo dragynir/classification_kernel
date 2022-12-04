@@ -4,11 +4,11 @@ stages:
     cmd: python datasets/create.py --config configs/example.yml
     deps:
     - path: configs/example.yml
-      md5: 152dadf6017d9b8adac2c64296882e3d
-      size: 2895
+      md5: d955b9a2b923b07197ce17a804b6d4d1
+      size: 2885
     - path: datasets/create.py
-      md5: 8d038f281798b007a46558e23bbe2231
-      size: 10018
+      md5: 45df78069f3ad03623222b89836999c3
+      size: 10083
     - path: datasets/raw
       md5: 1aae1458b59576d4f0b8e3307ebfdd06.dir
       size: 15441927

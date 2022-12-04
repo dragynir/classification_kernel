@@ -2,6 +2,8 @@ stages:
   create_train_dataset:
     cmd: python datasets/create.py --config configs/example.yml
     deps:
-    - datasets/create.py
-    - datasets/raw
-    - configs/example.yml
+      - datasets/create.py
+      - datasets/raw
+      - configs/example.yml
+    outs:
+      - datasets/prepare
