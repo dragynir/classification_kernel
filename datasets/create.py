@@ -251,7 +251,7 @@ def prepare_dataset(source_path, data_root, dataset_output_path, classification_
 
     csv_path = os.path.join(dataset_output_path, f'data{atrifacts_postfix}.csv')
     labelmap_path = os.path.join(dataset_output_path, 'labelmap.txt')
-    plot_path = os.path.join(dataset_output_path, f'barplot{atrifacts_postfix}.png')
+    plot_path = os.path.join(dataset_output_path, f'new_barplot{atrifacts_postfix}.png')
 
     df = None
     if type(source_path) is list:
