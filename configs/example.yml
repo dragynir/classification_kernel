@@ -1,21 +1,20 @@
-project_name: 'example_kernel' # project name in wandb
-config: 'some'
+project_name: 'example_dvc' # project name in wandb
+config: 'dvc'
 
-data_root: '/content/data/'  # data root for images source
+data_root: 'datasets/raw/'  # data root for images source
 images_source:
-  - '/content/data/train/'
-  - 'content/data/valid/'
+  - 'datasets/raw/'
 
-test_data_root: '/content/data/'
+test_data_root: 'datasets/raw/'
 test_images_source:
-  - 'content/data/test/'
+  - 'datasets/raw/'
 
 task: 'multiclass'
-dataset_path: '/content/classification_kernel/datasets/'
-df_path: '/content/classification_kernel/datasets/data.csv'
-labelmap_path: '/content/classification_kernel/datasets/labelmap.txt'
+dataset_path: 'datasets/prepared'
+df_path: 'datasets/prepared/data.csv'
+labelmap_path: 'datasets/prepared/labelmap.txt'
 
-experiment_path: '/content/drive/MyDrive/classification_kernel_example/experiment0'
+experiment_path: '/experiments/experiment0'
 
 batch_size: 16 # how many samples per batch to load
 sample_weights: False # balance images over target
