@@ -13,3 +13,8 @@ stages:
       md5: 1aae1458b59576d4f0b8e3307ebfdd06.dir
       size: 15441927
       nfiles: 25
+    outs:
+    - path: datasets/prepared
+      md5: 038356efe9bfb5f9d3e47503cc539a0d.dir
+      size: 35022
+      nfiles: 3
