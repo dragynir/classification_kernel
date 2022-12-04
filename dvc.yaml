@@ -1,0 +1,5 @@
+stages:
+  create_dataset:
+    cmd: python datasets/create.py
+    deps:
+    - datasets/raw
