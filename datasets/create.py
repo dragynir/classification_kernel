@@ -189,8 +189,9 @@ def prepare_source(data_path, images_extention, sub_folder='', filter_images=Fal
 
     df = pd.DataFrame()
     df['ids'] = train_files
+    df['ids'] = df['ids'].apply(lambda x: x.replace('\\', r'/'))
     df['ids'] = df['ids'].apply(lambda x: '/'.join(x.split('/')[-2:]))
-    df['class'] =  df['ids'].apply(lambda x: x.split('/')[0])
+    df['class'] = df['ids'].apply(lambda x: x.split('/')[0])
     df['fold'] = 0
 
     # raw dataset info

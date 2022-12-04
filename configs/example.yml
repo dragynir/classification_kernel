@@ -2,12 +2,10 @@ project_name: 'example_dvc' # project name in wandb
 config: 'dvc'
 
 data_root: 'datasets/raw/'  # data root for images source
-images_source:
-  - 'datasets/raw/'
+images_source: 'datasets/raw/'
 
 test_data_root: 'datasets/raw/'
-test_images_source:
-  - 'datasets/raw/'
+test_images_source: 'datasets/raw/'
 
 task: 'multiclass'
 dataset_path: 'datasets/prepared'
