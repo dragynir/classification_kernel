@@ -239,6 +239,8 @@ def prepare_dataset(source_path, data_root, dataset_output_path, classification_
         filter_labels: filter labels and do not create labels.txt for generated df
     '''
 
+    os.makedirs(dataset_output_path, exist_ok=True)
+
     filter_labels = False
     atrifacts_postfix = ''
 
