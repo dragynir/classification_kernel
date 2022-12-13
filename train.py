@@ -170,7 +170,8 @@ def create_experiment(opt):
         shutil.rmtree(dataset_path)
 
     # copy dataset to experiment folder
-    shutil.copytree(opt.dataset_path, dataset_path)
+    # TODO remove
+    # shutil.copytree(opt.dataset_path, dataset_path)
     os.makedirs(checkpoint_path, exist_ok=True)
     os.makedirs(captum_checkpoint_path, exist_ok=True)
 
