@@ -159,6 +159,7 @@ def create_experiment(opt):
     '''
     os.makedirs(opt.experiment_path, exist_ok=True)
     checkpoint_path = os.path.join(opt.experiment_path, 'checkpoint')
+    captum_checkpoint_path = os.path.join(opt.experiment_path, 'checkpoint_captum')
     dataset_path = os.path.join(opt.experiment_path, 'dataset')
     config_path = os.path.join(opt.experiment_path, 'config.yml')
 
@@ -172,7 +173,7 @@ def create_experiment(opt):
     shutil.copytree(opt.dataset_path, dataset_path)
     os.makedirs(checkpoint_path, exist_ok=True)
 
-    return checkpoint_path
+    return captum_checkpoint_path, checkpoint_path
 
 
 def get_domain_transforms(labelmap_path, night_label_path, domain):
@@ -198,7 +199,7 @@ def train(df_folds: pd.DataFrame, fold_number, opt):
     save_dir = './logdir/' + run_name
     os.makedirs(save_dir, exist_ok=True)
 
-    checkpoint_path = create_experiment(opt)
+    captum_checkpoint_path, checkpoint_path = create_experiment(opt)
 
     val_transforms = create_transforms(opt, 'val')
 
@@ -246,6 +247,10 @@ def train(df_folds: pd.DataFrame, fold_number, opt):
                                                     filename="{epoch:02d}_{val_loss:.4f}",
                                                     save_top_k=1, monitor='val_loss', mode='min')
 
+    captum_checkpoint_callback = pl.callbacks.ModelCheckpoint(dirpath=captum_checkpoint_path,
+                                                       filename="{epoch:02d}_{val_loss:.4f}",
+                                                       every_n_epochs=20)
+
     val_samples = next(iter(model.log_val_dataloader))
     train_samples = next(iter(model.log_train_dataloader))
 
@@ -256,6 +261,7 @@ def train(df_folds: pd.DataFrame, fold_number, opt):
 
                      early_stop_callback,
                      checkpoint_callback,
+                     captum_checkpoint_callback,
                      lr_monitor_callback
                  ]
 
