@@ -101,7 +101,6 @@ class Model(pl.LightningModule):
         x, y = batch
 
         y_hat = self(x)
-        print(y_hat, y)
         loss = self.loss_function(y_hat, y)
 
         return loss, y, F.softmax(y_hat, dim=1)
