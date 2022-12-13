@@ -98,11 +98,11 @@ class Model(pl.LightningModule):
 
     def step(self, batch):
 
-        x, y  = batch
+        x, y = batch
 
         y_hat = self(x)
-
-        loss  = self.loss_function(y_hat, y)
+        print(y_hat, y)
+        loss = self.loss_function(y_hat, y)
 
         return loss, y, F.softmax(y_hat, dim=1)
 
