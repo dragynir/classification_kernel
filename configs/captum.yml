@@ -1,4 +1,4 @@
-project_name: 'example_kernel' # project name in wandb
+project_name: 'captum' # project name in wandb
 config: 'some'
 
 data_root: '/kaggle/input/raw-data-all-v2/train_crops'  # data root for images source
