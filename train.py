@@ -46,8 +46,8 @@ class Model(pl.LightningModule):
             opt.num_classes,
             opt.multi_image)
 
-        self.f1_metric = F1(task=opt.task, num_classes=opt.num_classes, average='macro')
-        self.f1_class_metric = F1(task=opt.task, num_classes=opt.num_classes, average=None)
+        self.f1_metric = F1(task=opt.task, num_classes=opt.num_classes, average='macro', top_k=1)
+        self.f1_class_metric = F1(task=opt.task, num_classes=opt.num_classes, average=None, top_k=1)
 
         self.ap_metric = AveragePrecision(task=opt.task, num_classes=opt.num_classes, average='macro')
 
