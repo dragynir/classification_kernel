@@ -250,7 +250,7 @@ def train(df_folds: pd.DataFrame, fold_number, opt):
 
     captum_checkpoint_callback = pl.callbacks.ModelCheckpoint(dirpath=captum_checkpoint_path,
                                                        filename="{epoch:02d}_{val_loss:.4f}",
-                                                       every_n_epochs=8)
+                                                       every_n_epochs=5)
 
     val_samples = next(iter(model.log_val_dataloader))
     train_samples = next(iter(model.log_train_dataloader))
