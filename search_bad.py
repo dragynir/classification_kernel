@@ -65,44 +65,44 @@ def display_test_example(example, true_label, predicted_label, predicted_prob, l
     print('predicted_class:', label_to_class[predicted_label])
     print('predicted_prob', predicted_prob)
     example = imshow_transform(example)
-    # example = np.clip(example, 0, 1)
     ax.imshow(example)
     plt.show()
     plt.savefig('/kaggle/working/test_example.png')
 
 
-def display_training_examples(examples, true_labels, label_to_class, figsize=(10, 4)):
+def display_training_examples(examples, true_labels, label_to_class, name, figsize=(10, 4)):
     fig = plt.figure(figsize=figsize)
     num_examples = len(examples)
     for i in range(num_examples):
         ax = fig.add_subplot(1, num_examples, i + 1)
         example = examples[i]
         example = imshow_transform(example)
-        # example = np.clip(example, 0, 1)
         ax.imshow(example)
         ax.set_title(label_to_class[true_labels[i]])
     plt.show()
+    plt.savefig(f'/kaggle/working/training_{name}.png')
     return fig
 
 
 def display_proponents_and_opponents(correct_dataset, label_to_class, test_examples_batch, proponents_indices, opponents_indices,
                                      test_examples_true_labels, test_examples_predicted_labels,
                                      test_examples_predicted_probs):
-    for (
+
+    for i, (
             test_example,
             test_example_proponents,
             test_example_opponents,
             test_example_true_label,
             test_example_predicted_label,
             test_example_predicted_prob,
-    ) in zip(
+    ) in enumerate(zip(
         test_examples_batch,
         proponents_indices,
         opponents_indices,
         test_examples_true_labels,
         test_examples_predicted_labels,
         test_examples_predicted_probs,
-    ):
+    )):
         print("test example:")
         display_test_example(
             test_example,
@@ -117,7 +117,7 @@ def display_proponents_and_opponents(correct_dataset, label_to_class, test_examp
             *[correct_dataset[i] for i in test_example_proponents]
         )
         display_training_examples(
-            test_example_proponents_tensors, test_example_proponents_labels, label_to_class, figsize=(20, 8)
+            test_example_proponents_tensors, test_example_proponents_labels, label_to_class, name=str(i) + 'prop', figsize=(20, 8)
         )
 
         print("opponents:")
@@ -125,8 +125,9 @@ def display_proponents_and_opponents(correct_dataset, label_to_class, test_examp
             *[correct_dataset[i] for i in test_example_opponents]
         )
         display_training_examples(
-            test_example_opponents_tensors, test_example_opponents_labels, label_to_class, figsize=(20, 8)
+            test_example_opponents_tensors, test_example_opponents_labels, label_to_class, name=str(i) + 'opp', figsize=(20, 8)
         )
+        break
 
 
 def checkpoints_load_func(net, path):
