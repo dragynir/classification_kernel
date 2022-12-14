@@ -49,7 +49,7 @@ inverse_normalize = A.Compose([
             ], p=1.0)
 
 
-imshow_transform = lambda tensor_in_dataset: inverse_normalize(image=tensor_in_dataset.squeeze().cpu())['image'].permute(1, 2, 0)
+imshow_transform = lambda tensor_in_dataset: inverse_normalize(image=tensor_in_dataset.squeeze().cpu().numpy())['image'].permute(1, 2, 0)
 
 
 def display_test_example(example, true_label, predicted_label, predicted_prob, label_to_class):
