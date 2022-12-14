@@ -130,8 +130,8 @@ def display_proponents_and_opponents(correct_dataset, label_to_class, test_examp
 
 
 def checkpoints_load_func(net, path):
-    # ckpt = torch.load(path, map_location=torch.device('cpu'))
-    # net.load_state_dict(ckpt['state_dict'], strict=False)
+    ckpt = torch.load(path, map_location=DEVICE)
+    net.load_state_dict(ckpt['state_dict'], strict=False)
     return 1.
 
 
@@ -154,7 +154,7 @@ def test(opt_parser):
         opt = Dict(yaml.load(cfg, Loader=yaml.FullLoader))
 
     best_checkpoint_path = os.path.join('/kaggle/input/captum-checkpoints/captum_checkpoints/experiment0/checkpoint/epoch_26_val_loss_0.6639.ckpt')
-    correct_dataset_checkpoint_paths = glob.glob(os.path.join('/kaggle/input/captum-checkpoints/captum_checkpoints/experiment0/checkpoint_captum', "*.ckpt"))
+    correct_dataset_checkpoint_paths = glob.glob(os.path.join('/kaggle/working/checkpoints', "*.ckpt"))
 
     print('Use best checkpiont: ', best_checkpoint_path)
     print('Found checkpoints: ', len(correct_dataset_checkpoint_paths))
