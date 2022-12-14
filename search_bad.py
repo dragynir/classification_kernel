@@ -164,7 +164,7 @@ def test(opt_parser):
 
     df = pd.read_csv(opt.df_path, index_col=0)
     test_df = df[df['fold'] == 0]
-    train_df = df[df['fold'] != 0].sample(12800)  # TODO just for self influence
+    train_df = df[df['fold'] != 0]
     print(f'Test count {len(test_df)} images.')
     print(f'Train count {len(train_df)} images.')
 
@@ -206,7 +206,7 @@ def test(opt_parser):
         checkpoints=correct_dataset_checkpoint_paths,
         checkpoints_load_func=checkpoints_load_func,
         loss_fn=nn.CrossEntropyLoss(reduction="sum"),  # TODO class weights
-        batch_size=112,
+        batch_size=112,  # Магическое число
         vectorize=False,
     )
 
