@@ -135,6 +135,8 @@ class MyModule(nn.Module):
 
 def test(opt_parser):
 
+    torch.set_default_tensor_type('torch.cuda.FloatTensor')
+
     with open(opt_parser.config, 'r') as cfg:
         opt = Dict(yaml.load(cfg, Loader=yaml.FullLoader))
 
