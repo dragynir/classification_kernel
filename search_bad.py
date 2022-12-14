@@ -236,7 +236,7 @@ def test(opt_parser):
     # )
 
     start_time = datetime.datetime.now()
-    self_influence_scores = tracin_cp_fast._self_influence()
+    self_influence_scores = tracin_cp_fast.influence()
     total_minutes = (datetime.datetime.now() - start_time).total_seconds() / 60.0
     print('computed self influence scores for %d examples in %.2f minutes' % (len(self_influence_scores), total_minutes))
 
