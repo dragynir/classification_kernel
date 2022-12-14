@@ -163,7 +163,7 @@ def test(opt_parser):
         labels_names = f.readlines()
     df = pd.read_csv(opt.df_path, index_col=0)
     test_df = df[df['fold'] == 0]
-    train_df = df[df['fold'] != 0]
+    train_df = df[df['fold'] != 0].sample(13104)  # TO divide by 112
     print(f'Test count {len(test_df)} images.')
     print(f'Train count {len(train_df)} images.')
 
