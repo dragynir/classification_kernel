@@ -41,12 +41,16 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--config', type=str, default=None, help='yaml config path')
 
 
-inverse_normalize = A.Compose([
-                A.Normalize(
-                    mean=[-0.485/0.229, -0.456/0.224, -0.406/0.255],
-                    std=[1/0.229, 1/0.224, 1/0.255],
-                )
-            ], p=1.0)
+
+def inverse_normalize(image):
+    norm = A.Compose([
+                    A.Normalize(
+                        mean=[-0.485/0.229, -0.456/0.224, -0.406/0.255],
+                        std=[1/0.229, 1/0.224, 1/0.255],
+                    )
+                ], p=1.0)
+    print(image.shape)
+    return norm(image)
 
 
 imshow_transform = lambda tensor_in_dataset: inverse_normalize(image=tensor_in_dataset.squeeze().cpu().numpy())['image'].permute(1, 2, 0)
