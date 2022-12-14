@@ -62,8 +62,8 @@ imshow_transform = lambda tensor_in_dataset: inverse_normalize(tensor_in_dataset
 def display_test_example(example, true_label, predicted_label, predicted_prob, label_to_class, name):
     fig, ax = plt.subplots()
     label = 'true_class: ' + str(label_to_class[true_label]) + \
-    '\npredicted_class: ' + str(label_to_class[predicted_label]) + \
-    '\npredicted_prob: ' + str(predicted_prob)
+    ' predicted_class: ' + str(label_to_class[predicted_label]) + \
+    ' predicted_prob: ' + str(predicted_prob.item())
     example = imshow_transform(example)
     ax.imshow(example)
     ax.set_title(label)
