@@ -14,7 +14,7 @@ class ImageDataset(Dataset):
     '''
         Return images one by one with augmentations
     '''
-    def __init__(self, data_root, df, transforms=None, domain_transforms=None):
+    def __init__(self, data_root, df, transforms=None, domain_transforms=None, device=None):
         super().__init__()
         self.df = df
         self.data_root = data_root
@@ -23,6 +23,7 @@ class ImageDataset(Dataset):
         self.images_meta = df.images_meta.apply(json.loads).values if 'images_meta' in df.columns else None
         self.transforms = transforms
         self.domain_transforms = domain_transforms
+        self.device = device
         self.to_tensor = ToTensorV2()        
 
     def __crop_image(self, idx, image):
@@ -55,7 +56,7 @@ class ImageDataset(Dataset):
 
         if self.transforms:
             sample = self.transforms(image=image)
-            image  = sample['image']
+            image = sample['image']
 
         if self.domain_transforms:
             image = self.domain_transforms(image, label)
@@ -63,6 +64,10 @@ class ImageDataset(Dataset):
         image = self.to_tensor(image=image)['image']
         if self.labels is None:
             return image
+
+        if self.device is not None:
+            image = image.to(self.device)
+            label = torch.tensor(label).to(self.device)
 
         return image, label
 
@@ -116,12 +121,12 @@ class MultiImageDataset(ImageDataset):
         return multi_image, label
 
 
-def create_dataset(df: pd.DataFrame, data_root, transforms=None, domain_transforms=None) -> ImageDataset:
+def create_dataset(df: pd.DataFrame, data_root, transforms=None, domain_transforms=None, device=None) -> ImageDataset:
     '''
         Create dataset from data.csv DataFrame
     '''
     
-    return ImageDataset(data_root, df, transforms, domain_transforms)
+    return ImageDataset(data_root, df, transforms, domain_transforms, device=device)
 
 def create_multi_input_dataset(
     df: pd.DataFrame,

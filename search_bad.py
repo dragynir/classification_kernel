@@ -155,8 +155,8 @@ def test(opt_parser):
 
     transforms = create_transforms(opt, mode='val')
 
-    correct_dataset = create_dataset(train_df, opt.data_root, transforms=transforms)
-    test_dataset = create_dataset(test_df, opt.data_root, transforms=transforms)
+    correct_dataset = create_dataset(train_df, opt.data_root, transforms=transforms, device=DEVICE)
+    test_dataset = create_dataset(test_df, opt.data_root, transforms=transforms, device=DEVICE)
 
     # net = MyModule()
     # ckpt = torch.load(best_checkpoint_path, map_location=torch.device('cpu'))
