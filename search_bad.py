@@ -50,13 +50,13 @@ def denormalize(x, mean=IMG_MEAN, std=IMG_STD):
     ten = x.clone()
     for t, m, s in zip(ten, mean, std):
         t.mul_(s).add_(m)
-    return torch.clamp(ten, 0, 1).permute(1, 2, 0) * 255
+    return (torch.clamp(ten, 0, 1).permute(1, 2, 0) * 255).numpy()
 
 def inverse_normalize(image):
     image = denormalize(image)
     return image
 
-imshow_transform = lambda tensor_in_dataset: inverse_normalize(tensor_in_dataset.squeeze().cpu().numpy())
+imshow_transform = lambda tensor_in_dataset: inverse_normalize(tensor_in_dataset.squeeze().cpu())
 
 
 def display_test_example(example, true_label, predicted_label, predicted_prob, label_to_class):
