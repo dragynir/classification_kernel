@@ -248,10 +248,35 @@ def train(df_folds: pd.DataFrame, fold_number, opt):
                                                     filename="{epoch:02d}_{val_loss:.4f}",
                                                     save_top_k=1, monitor='val_loss', mode='min')
 
-    captum_checkpoint_callback = pl.callbacks.ModelCheckpoint(dirpath=captum_checkpoint_path,
+    captum0 = pl.callbacks.ModelCheckpoint(dirpath=captum_checkpoint_path,
                                                        filename="{epoch:02d}_{val_loss:.4f}",
-                                                       save_top_k=10,
                                                        every_n_epochs=5)
+
+    captum1 = pl.callbacks.ModelCheckpoint(dirpath=captum_checkpoint_path,
+                                           filename="{epoch:02d}_{val_loss:.4f}",
+                                           every_n_epochs=10)
+    captum2 = pl.callbacks.ModelCheckpoint(dirpath=captum_checkpoint_path,
+                                           filename="{epoch:02d}_{val_loss:.4f}",
+                                           every_n_epochs=15)
+
+    captum3 = pl.callbacks.ModelCheckpoint(dirpath=captum_checkpoint_path,
+                                           filename="{epoch:02d}_{val_loss:.4f}",
+                                           every_n_epochs=20)
+    captum4 = pl.callbacks.ModelCheckpoint(dirpath=captum_checkpoint_path,
+                                           filename="{epoch:02d}_{val_loss:.4f}",
+                                           every_n_epochs=25)
+    captum5 = pl.callbacks.ModelCheckpoint(dirpath=captum_checkpoint_path,
+                                           filename="{epoch:02d}_{val_loss:.4f}",
+                                           every_n_epochs=30)
+    captum6 = pl.callbacks.ModelCheckpoint(dirpath=captum_checkpoint_path,
+                                           filename="{epoch:02d}_{val_loss:.4f}",
+                                           every_n_epochs=35)
+    captum7 = pl.callbacks.ModelCheckpoint(dirpath=captum_checkpoint_path,
+                                           filename="{epoch:02d}_{val_loss:.4f}",
+                                           every_n_epochs=40)
+    captum8 = pl.callbacks.ModelCheckpoint(dirpath=captum_checkpoint_path,
+                                           filename="{epoch:02d}_{val_loss:.4f}",
+                                           every_n_epochs=45)
 
     val_samples = next(iter(model.log_val_dataloader))
     train_samples = next(iter(model.log_train_dataloader))
@@ -260,10 +285,18 @@ def train(df_folds: pd.DataFrame, fold_number, opt):
                      # log images to WandB
                      ImagePredictionLogger(val_samples, 'val_examples', model.labels_list),
                      ImagePredictionLogger(train_samples, 'train_examples', model.labels_list),
-
                      early_stop_callback,
                      checkpoint_callback,
-                     captum_checkpoint_callback,
+                     captum0,
+                     captum0,
+                     captum1,
+                     captum2,
+                     captum3,
+                     captum4,
+                     captum5,
+                     captum6,
+                     captum7,
+                     captum8,
                      lr_monitor_callback
                  ]
 
