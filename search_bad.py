@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import yaml
 import torch
+from efficientnet_pytorch import EfficientNet
 from torch import nn
 from torch.nn import functional as F
 from addict import Dict
@@ -116,8 +117,20 @@ def display_proponents_and_opponents(correct_dataset, label_to_class, test_examp
 
 
 def checkpoints_load_func(net, path):
-    _load_flexible_state_dict(net, path, keyname="model_state_dict")
+    ckpt = torch.load(path, map_location=torch.device('cpu'))
+    net.load_state_dict(ckpt['state_dict'], strict=False)
     return 1.
+
+
+class MyModule(nn.Module):
+
+    def __init__(self, num_classes=25, architecture='efficientnet-b0'):
+        super().__init__()
+        self.net = EfficientNet.from_pretrained(architecture)
+        self.net._fc = nn.Linear(in_features=self.net._fc.in_features, out_features=num_classes, bias=True)
+
+    def forward(self, input):
+        return self.net.forward(input)
 
 
 def test(opt_parser):
@@ -146,11 +159,9 @@ def test(opt_parser):
     correct_dataset = create_dataset(train_df, opt.data_root, transforms=transforms)
     test_dataset = create_dataset(test_df, opt.data_root, transforms=transforms)
 
-    net = Model.load_from_checkpoint(best_checkpoint_path,
-                                                 train_dataset=correct_dataset,
-                                                 val_dataset=correct_dataset, opt=opt,
-                                                 strict=False)
-
+    net = MyModule()
+    ckpt = torch.load(best_checkpoint_path, map_location=torch.device('cpu'))
+    net.load_state_dict(ckpt['state_dict'], strict=False)
 
     net.eval()
     net.to(DEVICE)
