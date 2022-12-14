@@ -66,6 +66,8 @@ def display_test_example(example, true_label, predicted_label, predicted_prob, l
     example = imshow_transform(example)
     ax.imshow(example)
     ax.set_title(label)
+    fig.tight_layout()
+    fig.subplots_adjust(top=0.8)
     plt.show()
     plt.savefig(f'/kaggle/working/results/test_{name}.png')
 
