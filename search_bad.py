@@ -42,17 +42,21 @@ parser.add_argument('--config', type=str, default=None, help='yaml config path')
 
 
 
+IMG_MEAN = (0.485, 0.456, 0.406)
+IMG_STD = (0.229, 0.224, 0.225)
+
+
+def denormalize(x, mean=IMG_MEAN, std=IMG_STD):
+    ten = x.clone()
+    for t, m, s in zip(ten, mean, std):
+        t.mul_(s).add_(m)
+    return torch.clamp(ten, 0, 1).permute(1, 2, 0) * 255
+
 def inverse_normalize(image):
-    norm = A.Compose([
-                    A.Normalize(
-                        mean=[-0.485/0.229, -0.456/0.224, -0.406/0.255],
-                        std=[1/0.229, 1/0.224, 1/0.255],
-                    )
-                ], p=1.0)
-    # return norm(image=image)['image']
+    image = denormalize(image)
     return image
 
-imshow_transform = lambda tensor_in_dataset: inverse_normalize(tensor_in_dataset.squeeze().permute(1, 2, 0).cpu().numpy())
+imshow_transform = lambda tensor_in_dataset: inverse_normalize(tensor_in_dataset.squeeze().cpu().numpy())
 
 
 def display_test_example(example, true_label, predicted_label, predicted_prob, label_to_class):
