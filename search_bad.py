@@ -161,7 +161,6 @@ def test(opt_parser):
     print(DEVICE)
     with open(opt.labelmap_path, 'r') as f:
         labels_names = f.readlines()
-
     df = pd.read_csv(opt.df_path, index_col=0)
     test_df = df[df['fold'] == 0]
     train_df = df[df['fold'] != 0]
