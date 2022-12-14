@@ -57,7 +57,7 @@ def display_test_example(example, true_label, predicted_label, predicted_prob, l
     print('true_class:', label_to_class[true_label])
     print('predicted_class:', label_to_class[predicted_label])
     print('predicted_prob', predicted_prob)
-    ax.imshow(torch.clip(imshow_transform(example), 0, 1))
+    ax.imshow(np.clip(imshow_transform(example), 0, 1))
     plt.show()
 
 
@@ -66,7 +66,7 @@ def display_training_examples(examples, true_labels, label_to_class, figsize=(10
     num_examples = len(examples)
     for i in range(num_examples):
         ax = fig.add_subplot(1, num_examples, i + 1)
-        ax.imshow(torch.clip(imshow_transform(examples[i]), 0, 1))
+        ax.imshow(np.clip(imshow_transform(examples[i]), 0, 1))
         ax.set_title(label_to_class[true_labels[i]])
     plt.show()
     return fig
