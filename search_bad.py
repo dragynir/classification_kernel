@@ -185,6 +185,15 @@ def test(opt_parser):
 
     print('Params: ', len(test_examples_batch), len(test_examples_predicted_probs), len(test_examples_true_labels))
 
+
+    fig, ax = plt.subplots()
+    example = imshow_transform(test_examples_batch[0])
+    # example = np.clip(example, 0, 1)
+    ax.imshow(example)
+    plt.show()
+    plt.savefig('/kaggle/working/test_example_before.png')
+
+
     tracin_cp_fast = TracInCPFast(
         model=net,
         final_fc_layer=list(net.children())[-1],
