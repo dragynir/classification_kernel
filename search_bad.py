@@ -59,7 +59,7 @@ def inverse_normalize(image):
 imshow_transform = lambda tensor_in_dataset: inverse_normalize(tensor_in_dataset.squeeze().cpu())
 
 
-def display_test_example(example, true_label, predicted_label, predicted_prob, label_to_class):
+def display_test_example(example, true_label, predicted_label, predicted_prob, label_to_class, name):
     fig, ax = plt.subplots()
     print('true_class:', label_to_class[true_label])
     print('predicted_class:', label_to_class[predicted_label])
@@ -67,7 +67,7 @@ def display_test_example(example, true_label, predicted_label, predicted_prob, l
     example = imshow_transform(example)
     ax.imshow(example)
     plt.show()
-    plt.savefig('/kaggle/working/test_example.png')
+    plt.savefig(f'/kaggle/working/results/test_{name}.png')
 
 
 def display_training_examples(examples, true_labels, label_to_class, name, figsize=(10, 4)):
@@ -80,7 +80,7 @@ def display_training_examples(examples, true_labels, label_to_class, name, figsi
         ax.imshow(example)
         ax.set_title(label_to_class[true_labels[i]])
     plt.show()
-    plt.savefig(f'/kaggle/working/training_{name}.png')
+    plt.savefig(f'/kaggle/working/results/training_{name}.png')
     return fig
 
 
@@ -110,6 +110,7 @@ def display_proponents_and_opponents(correct_dataset, label_to_class, test_examp
             test_example_predicted_label,
             test_example_predicted_prob,
             label_to_class,
+            name=str(i),
         )
 
         print("proponents:")
@@ -127,7 +128,6 @@ def display_proponents_and_opponents(correct_dataset, label_to_class, test_examp
         display_training_examples(
             test_example_opponents_tensors, test_example_opponents_labels, label_to_class, name=str(i) + 'opp', figsize=(20, 8)
         )
-        break
 
 
 def checkpoints_load_func(net, path):
@@ -191,12 +191,12 @@ def test(opt_parser):
     print('Params: ', len(test_examples_batch), len(test_examples_predicted_probs), len(test_examples_true_labels))
 
 
-    fig, ax = plt.subplots()
-    example = imshow_transform(test_examples_batch[0])
-    # example = np.clip(example, 0, 1)
-    ax.imshow(example)
-    plt.show()
-    plt.savefig('/kaggle/working/test_example_before.png')
+    # fig, ax = plt.subplots()
+    # example = imshow_transform(test_examples_batch[0])
+    # # example = np.clip(example, 0, 1)
+    # ax.imshow(example)
+    # plt.show()
+    # plt.savefig('/kaggle/working/test_example_before.png')
 
 
     tracin_cp_fast = TracInCPFast(
