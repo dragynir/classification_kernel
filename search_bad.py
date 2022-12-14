@@ -50,7 +50,7 @@ def denormalize(x, mean=IMG_MEAN, std=IMG_STD):
     ten = x.clone()
     for t, m, s in zip(ten, mean, std):
         t.mul_(s).add_(m)
-    return (ten.permute(1, 2, 0) * 255).numpy()
+    return (ten.permute(1, 2, 0) * 255).numpy().astype(int)
 
 def inverse_normalize(image):
     image = denormalize(image)
