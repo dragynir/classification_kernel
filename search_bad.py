@@ -117,8 +117,8 @@ def display_proponents_and_opponents(correct_dataset, label_to_class, test_examp
 
 
 def checkpoints_load_func(net, path):
-    ckpt = torch.load(path, map_location=torch.device('cpu'))
-    net.load_state_dict(ckpt['state_dict'], strict=False)
+    # ckpt = torch.load(path, map_location=torch.device('cpu'))
+    # net.load_state_dict(ckpt['state_dict'], strict=False)
     return 1.
 
 
@@ -142,7 +142,7 @@ def test(opt_parser):
     correct_dataset_checkpoint_paths = glob.glob(os.path.join('/kaggle/input/captum-checkpoints/captum_checkpoints/experiment0/checkpoint_captum', "*.ckpt"))
 
     print('Use best checkpiont: ', best_checkpoint_path)
-    print('Found:', len(correct_dataset_checkpoint_paths))
+    print('Found checkpoints: ', len(correct_dataset_checkpoint_paths))
 
     with open(opt.labelmap_path, 'r') as f:
         labels_names = f.readlines()
@@ -158,10 +158,12 @@ def test(opt_parser):
     correct_dataset = create_dataset(train_df, opt.data_root, transforms=transforms)
     test_dataset = create_dataset(test_df, opt.data_root, transforms=transforms)
 
-    net = MyModule()
-    ckpt = torch.load(best_checkpoint_path, map_location=torch.device('cpu'))
-    net.load_state_dict(ckpt['state_dict'], strict=False)
+    # net = MyModule()
+    # ckpt = torch.load(best_checkpoint_path, map_location=torch.device('cpu'))
+    # net.load_state_dict(ckpt['state_dict'], strict=False)
 
+    net = EfficientNet.from_pretrained('efficientnet-b0')
+    net._fc = nn.Linear(in_features=net._fc.in_features, out_features=25, bias=True)
     net.eval()
     net.to(DEVICE)
 
