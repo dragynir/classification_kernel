@@ -210,30 +210,35 @@ def test(opt_parser):
         vectorize=False,
     )
 
-    k = 10
-    start_time = datetime.datetime.now()
-    proponents_indices, proponents_influence_scores = tracin_cp_fast.influence(
-        test_examples_batch, test_examples_true_labels, k=k, proponents=True
-    )
-    opponents_indices, opponents_influence_scores = tracin_cp_fast.influence(
-        test_examples_batch, test_examples_true_labels, k=k, proponents=False
-    )
-    total_minutes = (datetime.datetime.now() - start_time).total_seconds() / 60.0
-    print(
-        "Computed proponents / opponents over a dataset of %d examples in %.2f minutes"
-        % (len(correct_dataset), total_minutes)
-    )
+    # k = 10
+    # start_time = datetime.datetime.now()
+    # proponents_indices, proponents_influence_scores = tracin_cp_fast.influence(
+    #     test_examples_batch, test_examples_true_labels, k=k, proponents=True
+    # )
+    # opponents_indices, opponents_influence_scores = tracin_cp_fast.influence(
+    #     test_examples_batch, test_examples_true_labels, k=k, proponents=False
+    # )
+    # total_minutes = (datetime.datetime.now() - start_time).total_seconds() / 60.0
+    # print(
+    #     "Computed proponents / opponents over a dataset of %d examples in %.2f minutes"
+    #     % (len(correct_dataset), total_minutes)
+    # )
+    #
+    # display_proponents_and_opponents(
+    #     correct_dataset,
+    #     labels_names,
+    #     test_examples_batch,
+    #     proponents_indices,
+    #     opponents_indices,
+    #     test_examples_true_labels,
+    #     test_examples_predicted_labels,
+    #     test_examples_predicted_probs,
+    # )
 
-    display_proponents_and_opponents(
-        correct_dataset,
-        labels_names,
-        test_examples_batch,
-        proponents_indices,
-        opponents_indices,
-        test_examples_true_labels,
-        test_examples_predicted_labels,
-        test_examples_predicted_probs,
-    )
+    start_time = datetime.datetime.now()
+    self_influence_scores = tracin_cp_fast.self_influence()
+    total_minutes = (datetime.datetime.now() - start_time).total_seconds() / 60.0
+    print('computed self influence scores for %d examples in %.2f minutes' % (len(self_influence_scores), total_minutes))
 
 
 if __name__ == "__main__":
