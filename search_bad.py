@@ -138,9 +138,6 @@ def test(opt_parser):
     with open(opt_parser.config, 'r') as cfg:
         opt = Dict(yaml.load(cfg, Loader=yaml.FullLoader))
 
-    output_path = os.path.join(opt.experiment_path, 'results')
-    os.makedirs(output_path, exist_ok=True)
-
     best_checkpoint_path = os.path.join('/kaggle/input/captum-checkpoints/captum_checkpoints/experiment0/checkpoint/epoch_26_val_loss_0.6639.ckpt')
     correct_dataset_checkpoint_paths = glob.glob(os.path.join('/kaggle/input/captum-checkpoints/captum_checkpoints/experiment0/checkpoint_captum', "*.ckpt"))
 
