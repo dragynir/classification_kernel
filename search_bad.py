@@ -62,6 +62,7 @@ def display_test_example(example, true_label, predicted_label, predicted_prob, l
     print('predicted_prob', predicted_prob)
     ax.imshow(np.clip(imshow_transform(example), 0, 1))
     plt.show()
+    plt.savefig('/kaggle/working/test_example.png')
 
 
 def display_training_examples(examples, true_labels, label_to_class, figsize=(10, 4)):
