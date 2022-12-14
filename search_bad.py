@@ -143,7 +143,7 @@ def test(opt_parser):
 
     print('Use best checkpiont: ', best_checkpoint_path)
     print('Found checkpoints: ', len(correct_dataset_checkpoint_paths))
-
+    print(DEVICE)
     with open(opt.labelmap_path, 'r') as f:
         labels_names = f.readlines()
 
