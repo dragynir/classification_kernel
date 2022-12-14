@@ -163,8 +163,8 @@ def test(opt_parser):
         labels_names = f.readlines()
 
     df = pd.read_csv(opt.df_path, index_col=0)
-    test_df = df[df['fold'] == 0].sample(50)
-    train_df = df[df['fold'] != 0].sample(100)
+    test_df = df[df['fold'] == 0]
+    train_df = df[df['fold'] != 0]
     print(f'Test count {len(test_df)} images.')
     print(f'Train count {len(train_df)} images.')
 
@@ -206,7 +206,7 @@ def test(opt_parser):
         checkpoints=correct_dataset_checkpoint_paths,
         checkpoints_load_func=checkpoints_load_func,
         loss_fn=nn.CrossEntropyLoss(reduction="sum"),  # TODO class weights
-        batch_size=16,
+        batch_size=128,
         vectorize=False,
     )
 
