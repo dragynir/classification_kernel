@@ -170,6 +170,8 @@ def test(opt_parser):
     test_examples_predicted_probs, test_examples_predicted_labels = torch.max(F.softmax(net(test_examples_batch.to(DEVICE)), dim=1), dim=1)
     test_examples_true_labels = torch.Tensor([test_dataset[i][1] for i in test_examples_indices]).long()
 
+    print('Params: ', len(test_examples_batch), len(test_examples_predicted_probs), len(test_examples_true_labels))
+
     tracin_cp_fast = TracInCPFast(
         model=net,
         final_fc_layer=list(net.children())[-1],
