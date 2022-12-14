@@ -174,7 +174,7 @@ def test(opt_parser):
         influence_src_dataset=correct_dataset,
         checkpoints=correct_dataset_checkpoint_paths,
         checkpoints_load_func=checkpoints_load_func,
-        loss_fn=nn.CrossEntropyLoss(),  # TODO class weights
+        loss_fn=nn.CrossEntropyLoss(reduction="sum"),  # TODO class weights
         batch_size=16,
         vectorize=False,
     )
