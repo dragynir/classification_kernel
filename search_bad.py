@@ -49,7 +49,6 @@ def inverse_normalize(image):
                         std=[1/0.229, 1/0.224, 1/0.255],
                     )
                 ], p=1.0)
-    print(image.shape)
     return norm(image=image)
 
 
