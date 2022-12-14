@@ -61,11 +61,12 @@ imshow_transform = lambda tensor_in_dataset: inverse_normalize(tensor_in_dataset
 
 def display_test_example(example, true_label, predicted_label, predicted_prob, label_to_class, name):
     fig, ax = plt.subplots()
-    print('true_class:', label_to_class[true_label])
-    print('predicted_class:', label_to_class[predicted_label])
-    print('predicted_prob', predicted_prob)
+    label = 'true_class: ' + str(label_to_class[true_label])
+    '\npredicted_class: ' + str(label_to_class[predicted_label])
+    '\npredicted_prob: ' + str(predicted_prob)
     example = imshow_transform(example)
     ax.imshow(example)
+    ax.set_title(label)
     plt.show()
     plt.savefig(f'/kaggle/working/results/test_{name}.png')
 
@@ -103,7 +104,6 @@ def display_proponents_and_opponents(correct_dataset, label_to_class, test_examp
         test_examples_predicted_labels,
         test_examples_predicted_probs,
     )):
-        print("test example:")
         display_test_example(
             test_example,
             test_example_true_label,
@@ -113,7 +113,6 @@ def display_proponents_and_opponents(correct_dataset, label_to_class, test_examp
             name=str(i),
         )
 
-        print("proponents:")
         test_example_proponents_tensors, test_example_proponents_labels = zip(
             *[correct_dataset[i] for i in test_example_proponents]
         )
@@ -121,7 +120,6 @@ def display_proponents_and_opponents(correct_dataset, label_to_class, test_examp
             test_example_proponents_tensors, test_example_proponents_labels, label_to_class, name=str(i) + 'prop', figsize=(20, 8)
         )
 
-        print("opponents:")
         test_example_opponents_tensors, test_example_opponents_labels = zip(
             *[correct_dataset[i] for i in test_example_opponents]
         )
