@@ -153,7 +153,7 @@ def test(opt_parser):
     with open(opt_parser.config, 'r') as cfg:
         opt = Dict(yaml.load(cfg, Loader=yaml.FullLoader))
 
-    best_checkpoint_path = os.path.join('/kaggle/input/captum-checkpoints/captum_checkpoints/experiment0/checkpoint/epoch_26_val_loss_0.6639.ckpt')
+    best_checkpoint_path = os.path.join('/kaggle/working/best.ckpt')
     correct_dataset_checkpoint_paths = glob.glob(os.path.join('/kaggle/working/checkpoints', "*.ckpt"))
 
     print('Use best checkpiont: ', best_checkpoint_path)
@@ -179,6 +179,7 @@ def test(opt_parser):
 
     net = EfficientNet.from_pretrained('efficientnet-b0')
     net._fc = nn.Linear(in_features=net._fc.in_features, out_features=25, bias=True)
+    checkpoints_load_func(net, best_checkpoint_path)
     net.eval()
     net.to(DEVICE)
 
