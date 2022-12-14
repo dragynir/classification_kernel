@@ -146,9 +146,9 @@ def test(opt_parser):
     with open(opt.labelmap_path, 'r') as f:
         labels_names = f.readlines()
 
-    test_df = pd.read_csv(opt.df_path, index_col=0)
-    test_df = test_df[test_df['fold'] == 0]
-    train_df = test_df[test_df['fold'] != 0]
+    df = pd.read_csv(opt.df_path, index_col=0)
+    test_df = df[df['fold'] == 0]
+    train_df = df[df['fold'] != 0]
     print(f'Testing on {len(test_df)} images.')
 
     transforms = create_transforms(opt, mode='val')
