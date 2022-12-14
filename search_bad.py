@@ -49,10 +49,10 @@ def inverse_normalize(image):
                         std=[1/0.229, 1/0.224, 1/0.255],
                     )
                 ], p=1.0)
-    # return norm(image=image)
+    # return norm(image=image)['image']
     return image
 
-imshow_transform = lambda tensor_in_dataset: inverse_normalize(tensor_in_dataset.squeeze().permute(1, 2, 0).cpu().numpy())['image']
+imshow_transform = lambda tensor_in_dataset: inverse_normalize(tensor_in_dataset.squeeze().permute(1, 2, 0).cpu().numpy())
 
 
 def display_test_example(example, true_label, predicted_label, predicted_prob, label_to_class):
