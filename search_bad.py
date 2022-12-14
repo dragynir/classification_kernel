@@ -209,6 +209,7 @@ def test(opt_parser):
         vectorize=False,
     )
 
+    # Можно запускать для поиска оппонентов и пропонентов
     # k = 10
     # start_time = datetime.datetime.now()
     # proponents_indices, proponents_influence_scores = tracin_cp_fast.influence(
@@ -234,6 +235,7 @@ def test(opt_parser):
     #     test_examples_predicted_probs,
     # )
 
+    # Поиск плохой разметки
     start_time = datetime.datetime.now()
     self_influence_scores = tracin_cp_fast.influence()
     total_minutes = (datetime.datetime.now() - start_time).total_seconds() / 60.0
