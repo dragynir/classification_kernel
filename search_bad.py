@@ -142,6 +142,7 @@ def test(opt_parser):
     correct_dataset_checkpoint_paths = glob.glob(os.path.join('/kaggle/input/captum-checkpoints/captum_checkpoints/experiment0/checkpoint_captum', "*.ckpt"))
 
     print('Use best checkpiont: ', best_checkpoint_path)
+    print('Found:', len(correct_dataset_checkpoint_paths))
 
     with open(opt.labelmap_path, 'r') as f:
         labels_names = f.readlines()
