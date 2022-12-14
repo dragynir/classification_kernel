@@ -164,7 +164,7 @@ def test(opt_parser):
 
     df = pd.read_csv(opt.df_path, index_col=0)
     test_df = df[df['fold'] == 0]
-    train_df = df[df['fold'] != 0]
+    train_df = df[df['fold'] != 0].sample(12800)  # TODO just for self influence
     print(f'Test count {len(test_df)} images.')
     print(f'Train count {len(train_df)} images.')
 
