@@ -49,8 +49,8 @@ def inverse_normalize(image):
                         std=[1/0.229, 1/0.224, 1/0.255],
                     )
                 ], p=1.0)
-    return norm(image=image)
-
+    # return norm(image=image)
+    return image
 
 imshow_transform = lambda tensor_in_dataset: inverse_normalize(tensor_in_dataset.squeeze().permute(1, 2, 0).cpu().numpy())['image']
 
@@ -60,7 +60,9 @@ def display_test_example(example, true_label, predicted_label, predicted_prob, l
     print('true_class:', label_to_class[true_label])
     print('predicted_class:', label_to_class[predicted_label])
     print('predicted_prob', predicted_prob)
-    ax.imshow(np.clip(imshow_transform(example), 0, 1))
+    example = imshow_transform(example)
+    # example = np.clip(example, 0, 1)
+    ax.imshow(example)
     plt.show()
     plt.savefig('/kaggle/working/test_example.png')
 
@@ -70,7 +72,10 @@ def display_training_examples(examples, true_labels, label_to_class, figsize=(10
     num_examples = len(examples)
     for i in range(num_examples):
         ax = fig.add_subplot(1, num_examples, i + 1)
-        ax.imshow(np.clip(imshow_transform(examples[i]), 0, 1))
+        example = examples[i]
+        example = imshow_transform(example)
+        # example = np.clip(example, 0, 1)
+        ax.imshow(example)
         ax.set_title(label_to_class[true_labels[i]])
     plt.show()
     return fig
