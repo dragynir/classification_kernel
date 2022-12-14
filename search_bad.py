@@ -131,7 +131,7 @@ def display_proponents_and_opponents(correct_dataset, label_to_class, test_examp
 
 def checkpoints_load_func(net, path):
     ckpt = torch.load(path, map_location=DEVICE)
-    net.load_state_dict(ckpt['state_dict'], strict=False)
+    net.load_state_dict(ckpt, strict=False)
     return 1.
 
 
