@@ -182,7 +182,7 @@ def test(opt_parser):
     net.eval()
     net.to(DEVICE)
 
-    test_examples_indices = [1000, 1200, 2345, 2700, 3000]
+    test_examples_indices = [0, 1, 2, 3] # [1000, 1200, 2345, 2700, 3000]
     test_examples_batch = torch.stack([test_dataset[i][0] for i in test_examples_indices])
     test_examples_predicted_probs, test_examples_predicted_labels = torch.max(F.softmax(net(test_examples_batch.to(DEVICE)), dim=1), dim=1)
     test_examples_true_labels = torch.Tensor([test_dataset[i][1] for i in test_examples_indices]).long().to(DEVICE)
@@ -205,41 +205,41 @@ def test(opt_parser):
         checkpoints=correct_dataset_checkpoint_paths,
         checkpoints_load_func=checkpoints_load_func,
         loss_fn=nn.CrossEntropyLoss(reduction="sum"),  # TODO class weights
-        batch_size=112,  # Магическое число
+        batch_size=128,  # Магическое число 112 для influence
         vectorize=False,
     )
 
     # Можно запускать для поиска оппонентов и пропонентов
-    # k = 10
-    # start_time = datetime.datetime.now()
-    # proponents_indices, proponents_influence_scores = tracin_cp_fast.influence(
-    #     test_examples_batch, test_examples_true_labels, k=k, proponents=True
-    # )
-    # opponents_indices, opponents_influence_scores = tracin_cp_fast.influence(
-    #     test_examples_batch, test_examples_true_labels, k=k, proponents=False
-    # )
-    # total_minutes = (datetime.datetime.now() - start_time).total_seconds() / 60.0
-    # print(
-    #     "Computed proponents / opponents over a dataset of %d examples in %.2f minutes"
-    #     % (len(correct_dataset), total_minutes)
-    # )
-    #
-    # display_proponents_and_opponents(
-    #     correct_dataset,
-    #     labels_names,
-    #     test_examples_batch,
-    #     proponents_indices,
-    #     opponents_indices,
-    #     test_examples_true_labels,
-    #     test_examples_predicted_labels,
-    #     test_examples_predicted_probs,
-    # )
+    k = 5
+    start_time = datetime.datetime.now()
+    proponents_indices, proponents_influence_scores = tracin_cp_fast.influence(
+        test_examples_batch, test_examples_true_labels, k=k, proponents=True
+    )
+    opponents_indices, opponents_influence_scores = tracin_cp_fast.influence(
+        test_examples_batch, test_examples_true_labels, k=k, proponents=False
+    )
+    total_minutes = (datetime.datetime.now() - start_time).total_seconds() / 60.0
+    print(
+        "Computed proponents / opponents over a dataset of %d examples in %.2f minutes"
+        % (len(correct_dataset), total_minutes)
+    )
+
+    display_proponents_and_opponents(
+        correct_dataset,
+        labels_names,
+        test_examples_batch,
+        proponents_indices,
+        opponents_indices,
+        test_examples_true_labels,
+        test_examples_predicted_labels,
+        test_examples_predicted_probs,
+    )
 
     # Поиск плохой разметки
-    start_time = datetime.datetime.now()
-    self_influence_scores = tracin_cp_fast.influence()
-    total_minutes = (datetime.datetime.now() - start_time).total_seconds() / 60.0
-    print('computed self influence scores for %d examples in %.2f minutes' % (len(self_influence_scores), total_minutes))
+    #start_time = datetime.datetime.now()
+    #self_influence_scores = tracin_cp_fast.influence()
+    #total_minutes = (datetime.datetime.now() - start_time).total_seconds() / 60.0
+    #print('computed self influence scores for %d examples in %.2f minutes' % (len(self_influence_scores), total_minutes))
 
 
 if __name__ == "__main__":
