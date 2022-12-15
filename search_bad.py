@@ -182,7 +182,7 @@ def test(opt_parser):
     net.eval()
     net.to(DEVICE)
 
-    test_examples_indices = [0, 1, 2, 3] # [1000, 1200, 2345, 2700, 3000]
+    test_examples_indices = [1000, 1200, 2345, 2700, 3000]
     test_examples_batch = torch.stack([test_dataset[i][0] for i in test_examples_indices])
     test_examples_predicted_probs, test_examples_predicted_labels = torch.max(F.softmax(net(test_examples_batch.to(DEVICE)), dim=1), dim=1)
     test_examples_true_labels = torch.Tensor([test_dataset[i][1] for i in test_examples_indices]).long().to(DEVICE)
